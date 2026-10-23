@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/", "destination": "/Nuskha/index.html" },
+    { "source": "/Nuskha/(.*)", "destination": "/Nuskha/$1" },
+    { "source": "/(.*)", "destination": "/Nuskha/$1" }
+  ]
+}

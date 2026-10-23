@@ -1,86 +1,57 @@
-# Nuskha AI (MediGuard) &middot; Healthcare Hackathon
+# Nuskha AI &middot; Healthcare Hackathon
+
+> **Tagline:** “Understand Medicines. Simplify Prescriptions. Support Safer Care.”
 
 A modern, responsive, and accessible medication-assistance web platform designed to empower patients, caregivers, and community healthcare workers with intelligent prescription parsing, visual bilingual dosage schedules, and transparent generic medicine matching.
 
 ---
 
-## 🌟 Hackathon Stage 1: Foundation & UI Shell
+## 🌟 Project Architecture & Modules
 
-In Stage 1, the core architecture, responsive user interface shell, navigation, and prototype presentation layer have been implemented using pure HTML5, CSS3, and modern vanilla JavaScript.
+### 1. Stage 1: Brand & Responsive Shell & Generic Matcher
+- Medical design language with teal & slate palette, clinical disclaimer banners, and SPA tab navigation.
+- Interactive Dashboard with 3-step medication lifecycle diagram.
+- Generic Medicine Matcher: search by brand/salt with dosage form filter and cost difference indicators.
 
-### Key Modules Implemented
+### 2. Stage 2: Prescription Scanner & Safety Checks
+- Client-side document upload (JPG, PNG, WEBP) with strict file validation (<10MB, >100B).
+- In-browser Optical Character Recognition (OCR) using Tesseract.js v5 with live progress reporting.
+- Interactive extracted text editor for reviewing and editing OCR tokens.
+- Structured medicine matcher against an authoritative 18-drug reference catalog (FDA NDC, WHO Essential Medicines, BNF 86).
+- Pairwise drug-drug interaction screener with US FDA Boxed Warnings and mandatory disclaimers.
+- Seamless bridge action button (**"Transfer to Dosage Assistant &rarr;"**) transferring confirmed medicines to Stage 3.
 
-1. **Brand & Responsive Navigation Shell**
-   - Clean healthcare design language with a restrained teal and slate medical palette.
-   - Header with brand identity (`Nuskha AI` / `MediGuard`) and interactive navigation pills.
-   - Prominent clinical prototype disclaimer banner at the top and in the footer.
-   - Single-Page-Application (SPA) view switching without page reloads, deep-linking via URL hash (`#dashboard`, `#scanner`, `#dosage`, `#generic`), and mobile responsive menu.
-
-2. **Dashboard / Landing View**
-   - Clear project mission statement and architecture overview.
-   - Three feature cards with descriptive text, status tags, and direct navigation links.
-   - Interactive 3-step workflow diagram explaining the medication management lifecycle.
-
-3. **Prescription Scanner & Safety Checks (UI Shell)**
-   - Drag-and-drop document upload zone and local file selector.
-   - Sensible empty state with SVG iconography when no document is loaded.
-   - Interactive demo presets (Sample 1: Antibiotic + Analgesic; Sample 2: Metabolic Care) to preview structured extraction cards.
-   - Visual safety warning cards for contraindication checks and dosage thresholds.
-   - Clear privacy guardrail: Zero personally identifiable information (PII) stored or transmitted.
-
-4. **Visual Dosage Assistant (Urdu & Sindhi Accessibility)**
-   - 4-slot daily dosage schedule: Morning (☀️), Afternoon (🌤️), Evening (🌅), Bedtime (🌙).
-   - Dynamic 3-language selector: **English**, **اردو (Urdu)**, and **سنڌي (Sindhi)**.
-   - High-contrast visual pill cards with count badges and food/water instructions.
-   - Multilingual audio guidance button previews for low-literacy patient accessibility.
-
-5. **Generic Medicine Matcher (UI Shell)**
-   - Real-time search by Brand Name or Active Pharmaceutical Ingredient (Salt).
-   - Form-based filter chips (All, Tablet, Capsule, Syrup).
-   - Comparative data table showing Brand Name, Active Salt, Strength, Dosage Form, Bioequivalent Generic Alternative, and sample price indicators.
-   - Informative pharmacist advisory disclaimers and empty search states.
+### 3. Stage 3: Visual Dosage Assistant
+- 4-quad timeline (Morning ☀️, Afternoon 🌤️, Evening 🌅, Bedtime 🌙) and As-Needed (PRN 💧) section.
+- Pictorial meal cues (After Food 🍽️, Before Food 🥛, With Food 🍲, If Fever/Pain 💧).
+- Multilingual accessibility: **English**, **اردو (Urdu)**, and **سنڌي (Sindhi)**.
+- Browser-native speech synthesis (TTS) for accessible voice readouts.
+- Strict ambiguity and contradiction guardrails preventing prescription fabrication.
 
 ---
 
-## 🚀 How to Run and Test
-
-The application has zero build dependencies and requires no `npm install`. It runs directly in any modern web browser.
-
-### Option A: Direct Browser Launch
-Simply double-click or open either of the following files in your web browser (Chrome, Edge, Firefox, Safari):
-- `C:\Users\Abdul Latif\Desktop\Nuskha_Ai\Hackathon_26\index.html`
-- `C:\Users\Abdul Latif\Desktop\Nuskha_Ai\Hackathon_26\Nuskha`
-
-### Option B: Local Web Server (Recommended for testing)
-From PowerShell or Command Prompt:
+## 🚀 How to Run Locally
 
 ```powershell
-# Navigate to the project directory
-cd "C:\Users\Abdul Latif\Desktop\Nuskha_Ai\Hackathon_26"
-
-# Start Python's built-in HTTP server
-python -m http.server 8000
+cd Nuskha
+node server.js
 ```
+Then open [http://localhost:3000](http://localhost:3000).
 
-Then visit:
-[http://localhost:8000](http://localhost:8000) (or `http://localhost:8000/Nuskha`)
-
----
-
-## 🧪 Testing Checklist (Stage 1)
-
-- [x] **Navigation:** Click on all header links (Dashboard, Prescription Scanner, Dosage Assistant, Generic Matcher) to confirm smooth view transitions.
-- [x] **Dashboard Cards:** Click "Open Scanner Shell", "Open Dosage Assistant", and "Open Generic Matcher" on each card.
-- [x] **Scanner Presets:** Click "Sample 1" and "Sample 2" in the Scanner view to view extracted data cards, and click "Reset" to return to the empty state.
-- [x] **Multilingual Switcher:** In Dosage Assistant, toggle between English, اردو, and سنڌي to confirm real-time translation of slot headers and instructions.
-- [x] **Generic Search & Filter:** In Generic Matcher, search for "panadol", "augmentin", or "omeprazole", and filter by form (Tablet, Capsule, Syrup).
-- [x] **Responsive Layout:** Resize browser window to mobile width (<600px) to verify hamburger menu and single-column card stacking.
+*(Or directly open `Nuskha/index.html` in any modern web browser).*
 
 ---
 
-## 📋 What Remains for Stage 2
+## 🧪 Automated Testing
 
-1. **AI Prescription OCR Engine:** Connecting real optical character recognition (OCR) or multimodal vision APIs to extract handwritten and printed prescription text.
-2. **Clinical Rules Engine:** Implementing automated drug-drug interaction (DDI) checks, maximum daily dosage validation, and contraindication flagging.
-3. **Speech Synthesis (TTS):** Hooking up Web Speech API or multilingual TTS for Urdu and Sindhi voice guidance.
-4. **Expanded Regional Formulary:** Connecting or seeding a broader database of registered generic medicines and pricing data in Pakistan.
+```powershell
+cd Nuskha
+node tests/run-tests.js
+```
+46 automated unit tests covering file validation, medicine matching, Levenshtein similarity, interaction screening, and dataset integrity (100% pass rate).
+
+---
+
+## ⚠️ Medical Disclaimer
+
+Nuskha AI is developed strictly as a technology concept and research demonstration for a healthcare hackathon. It does not provide clinical diagnoses, medical advice, prescription writing, or pharmacy dispensations. Real medication decisions must always be directed by a licensed medical practitioner or registered pharmacist. OCR can make mistakes and unclear prescription instructions must be confirmed by a qualified healthcare professional.
