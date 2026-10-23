@@ -1,0 +1,607 @@
+/**
+ * Nuskha AI - Stage 2 Prescription Scanner
+ * Modular Scoped Stylesheet
+ */
+
+:root {
+  --nuskha-primary: #0284c7;
+  --nuskha-primary-hover: #0369a1;
+  --nuskha-primary-light: #e0f2fe;
+  --nuskha-secondary: #0d9488;
+  --nuskha-accent: #6366f1;
+  --nuskha-danger: #e11d48;
+  --nuskha-danger-light: #ffe4e6;
+  --nuskha-warning: #d97706;
+  --nuskha-warning-light: #fef3c7;
+  --nuskha-success: #10b981;
+  --nuskha-success-light: #d1fae5;
+  --nuskha-bg: #f8fafc;
+  --nuskha-card: #ffffff;
+  --nuskha-border: #e2e8f0;
+  --nuskha-text: #0f172a;
+  --nuskha-text-muted: #64748b;
+  --nuskha-radius-sm: 6px;
+  --nuskha-radius: 12px;
+  --nuskha-radius-lg: 16px;
+  --nuskha-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --nuskha-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --nuskha-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body.nuskha-preview-body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--nuskha-bg);
+  color: var(--nuskha-text);
+  line-height: 1.5;
+}
+
+/* Scanner Main Container */
+.nuskha-scanner-wrapper {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px 20px;
+}
+
+/* Header & Banner */
+.nuskha-scanner-header {
+  margin-bottom: 24px;
+}
+
+.nuskha-badge-stage {
+  display: inline-block;
+  padding: 4px 10px;
+  background-color: var(--nuskha-primary-light);
+  color: var(--nuskha-primary);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: 9999px;
+  margin-bottom: 8px;
+}
+
+.nuskha-scanner-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nuskha-scanner-subtitle {
+  font-size: 15px;
+  color: var(--nuskha-text-muted);
+  margin: 0;
+}
+
+/* Medical Disclaimer Banner */
+.nuskha-disclaimer-banner {
+  background-color: #fffbeb;
+  border: 1px solid #fde68a;
+  border-left: 5px solid var(--nuskha-warning);
+  border-radius: var(--nuskha-radius-sm);
+  padding: 14px 16px;
+  margin-bottom: 24px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.nuskha-disclaimer-icon {
+  font-size: 20px;
+  color: var(--nuskha-warning);
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.nuskha-disclaimer-content h4 {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #92400e;
+}
+
+.nuskha-disclaimer-content p {
+  margin: 0;
+  font-size: 13px;
+  color: #78350f;
+  line-height: 1.45;
+}
+
+/* Layout Grid */
+.nuskha-scanner-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 960px) {
+  .nuskha-scanner-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Cards */
+.nuskha-card {
+  background: var(--nuskha-card);
+  border: 1px solid var(--nuskha-border);
+  border-radius: var(--nuskha-radius);
+  box-shadow: var(--nuskha-shadow-sm);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.nuskha-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--nuskha-border);
+}
+
+.nuskha-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Dropzone */
+.nuskha-dropzone {
+  border: 2px dashed #cbd5e1;
+  border-radius: var(--nuskha-radius);
+  background-color: #fafbfc;
+  padding: 32px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.nuskha-dropzone:hover,
+.nuskha-dropzone.dragover {
+  border-color: var(--nuskha-primary);
+  background-color: var(--nuskha-primary-light);
+}
+
+.nuskha-dropzone-icon {
+  font-size: 40px;
+  color: #94a3b8;
+  margin-bottom: 12px;
+}
+
+.nuskha-dropzone-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: #334155;
+  margin: 0 0 6px 0;
+}
+
+.nuskha-dropzone-hint {
+  font-size: 12px;
+  color: var(--nuskha-text-muted);
+  margin: 0;
+}
+
+.nuskha-file-input {
+  display: none;
+}
+
+/* Sample Images Quick Pick */
+.nuskha-samples-bar {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--nuskha-border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nuskha-samples-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--nuskha-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.nuskha-samples-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.nuskha-btn-sample {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: var(--nuskha-radius-sm);
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.nuskha-btn-sample:hover {
+  background: var(--nuskha-primary-light);
+  border-color: var(--nuskha-primary);
+  color: var(--nuskha-primary);
+}
+
+/* Image Preview Container */
+.nuskha-preview-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nuskha-preview-image-wrapper {
+  max-height: 280px;
+  overflow: hidden;
+  border-radius: var(--nuskha-radius-sm);
+  border: 1px solid var(--nuskha-border);
+  background: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nuskha-preview-img {
+  max-width: 100%;
+  max-height: 280px;
+  object-fit: contain;
+}
+
+.nuskha-preview-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: var(--nuskha-text-muted);
+}
+
+/* Buttons */
+.nuskha-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--nuskha-radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nuskha-btn-primary {
+  background-color: var(--nuskha-primary);
+  color: #ffffff;
+}
+
+.nuskha-btn-primary:hover:not(:disabled) {
+  background-color: var(--nuskha-primary-hover);
+}
+
+.nuskha-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.nuskha-btn-outline {
+  background: transparent;
+  border: 1px solid var(--nuskha-border);
+  color: #334155;
+}
+
+.nuskha-btn-outline:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.nuskha-btn-danger {
+  background: transparent;
+  color: var(--nuskha-danger);
+  border: 1px solid transparent;
+}
+
+.nuskha-btn-danger:hover {
+  background: var(--nuskha-danger-light);
+}
+
+.nuskha-btn-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+/* Progress & Loading */
+.nuskha-progress-box {
+  background: #f8fafc;
+  border: 1px solid var(--nuskha-border);
+  border-radius: var(--nuskha-radius-sm);
+  padding: 14px;
+  margin: 14px 0;
+}
+
+.nuskha-progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 8px;
+}
+
+.nuskha-progress-track {
+  width: 100%;
+  height: 8px;
+  background-color: #e2e8f0;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.nuskha-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--nuskha-primary), var(--nuskha-secondary));
+  transition: width 0.2s ease;
+}
+
+/* Handwriting notice */
+.nuskha-handwriting-alert {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: var(--nuskha-radius-sm);
+  padding: 10px 14px;
+  font-size: 12px;
+  color: #1e40af;
+  margin-top: 12px;
+  line-height: 1.45;
+}
+
+/* Editable Textarea */
+.nuskha-ocr-editor-wrapper {
+  position: relative;
+}
+
+.nuskha-ocr-textarea {
+  width: 100%;
+  min-height: 150px;
+  padding: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  border: 1px solid var(--nuskha-border);
+  border-radius: var(--nuskha-radius-sm);
+  background-color: #ffffff;
+  color: #0f172a;
+  resize: vertical;
+}
+
+.nuskha-ocr-textarea:focus {
+  outline: none;
+  border-color: var(--nuskha-primary);
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+}
+
+.nuskha-editor-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+/* Medicine Results */
+.nuskha-med-card {
+  border: 1px solid var(--nuskha-border);
+  border-radius: var(--nuskha-radius-sm);
+  padding: 14px;
+  margin-bottom: 12px;
+  background: #ffffff;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.nuskha-med-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--nuskha-shadow-sm);
+}
+
+.nuskha-med-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.nuskha-med-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.nuskha-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 9999px;
+  text-transform: uppercase;
+}
+
+.nuskha-badge-exact {
+  background-color: var(--nuskha-success-light);
+  color: #065f46;
+}
+
+.nuskha-badge-fuzzy {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.nuskha-badge-severe {
+  background-color: var(--nuskha-danger-light);
+  color: #9f1239;
+}
+
+.nuskha-badge-moderate {
+  background-color: var(--nuskha-warning-light);
+  color: #92400e;
+}
+
+.nuskha-med-details {
+  font-size: 13px;
+  color: #334155;
+  margin-bottom: 8px;
+}
+
+.nuskha-med-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 6px;
+  font-size: 12px;
+  color: var(--nuskha-text-muted);
+  background: #f8fafc;
+  padding: 8px 10px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.nuskha-med-source {
+  font-size: 11px;
+  color: #64748b;
+  font-style: italic;
+}
+
+/* Ambiguous & Unmatched Boxes */
+.nuskha-ambiguous-box {
+  background-color: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: var(--nuskha-radius-sm);
+  padding: 12px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.nuskha-unmatched-box {
+  background-color: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--nuskha-radius-sm);
+  padding: 10px 14px;
+  font-size: 12px;
+  color: #475569;
+  margin-top: 10px;
+}
+
+.nuskha-token-pill {
+  display: inline-block;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 9999px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-family: monospace;
+  margin: 2px 4px;
+  color: #334155;
+}
+
+/* Interaction Alert Card */
+.nuskha-interaction-card {
+  border-radius: var(--nuskha-radius-sm);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+
+.nuskha-interaction-card.severe {
+  background-color: #fff1f2;
+  border: 1px solid #fecdd3;
+  border-left: 5px solid var(--nuskha-danger);
+}
+
+.nuskha-interaction-card.moderate {
+  background-color: #fffbeb;
+  border: 1px solid #fde68a;
+  border-left: 5px solid var(--nuskha-warning);
+}
+
+.nuskha-interaction-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.nuskha-interaction-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.nuskha-interaction-mechanism {
+  font-size: 13px;
+  color: #334155;
+  margin: 6px 0 8px 0;
+  line-height: 1.45;
+}
+
+.nuskha-interaction-uncertainty {
+  background: #ffffff;
+  border: 1px dashed #f59e0b;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: #92400e;
+  margin-bottom: 8px;
+}
+
+.nuskha-interaction-source {
+  font-size: 11px;
+  color: #64748b;
+}
+
+/* Empty States */
+.nuskha-empty-state {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--nuskha-text-muted);
+}
+
+.nuskha-empty-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+  color: #cbd5e1;
+}
+
+/* Safe Alert (when no interactions detected) */
+.nuskha-no-interaction-card {
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-left: 4px solid var(--nuskha-success);
+  border-radius: var(--nuskha-radius-sm);
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #166534;
+  margin-bottom: 12px;
+}
+
+/* Error Alert */
+.nuskha-error-card {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-left: 4px solid var(--nuskha-danger);
+  border-radius: var(--nuskha-radius-sm);
+  padding: 12px 14px;
+  color: #991b1b;
+  font-size: 13px;
+  margin-bottom: 14px;
+}

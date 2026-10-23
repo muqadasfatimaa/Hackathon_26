@@ -23,7 +23,9 @@ const MIME_TYPES = {
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
   '.svg': 'image/svg+xml',
-  '.ico': 'image/x-icon'
+  '.ico': 'image/x-icon',
+  '.webp': 'image/webp',
+  '.wasm': 'application/wasm'
 };
 
 const server = http.createServer((req, res) => {

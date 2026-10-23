@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nuskha AI — Stage 2 Prescription Scanner (Dev Preview)</title>
+  
+  <!-- Scoped Modular Stylesheet -->
+  <link rel="stylesheet" href="../styles/scanner.css" />
+
+  <style>
+    /* Development Preview Header */
+    .nuskha-dev-banner {
+      background: #0f172a;
+      color: #94a3b8;
+      font-size: 13px;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #1e293b;
+    }
+    .nuskha-dev-banner strong {
+      color: #38bdf8;
+    }
+    .nuskha-dev-tag {
+      background: #1e293b;
+      color: #f1f5f9;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+  </style>
+
+  <!-- Tesseract.js Real OCR Engine (v5) -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+</head>
+<body class="nuskha-preview-body">
+
+  <!-- Dev Preview Indicator Banner -->
+  <div class="nuskha-dev-banner">
+    <div>
+      <strong>NUSKHA AI</strong> — Stage 2 Prescription Scanner 
+      <span class="nuskha-dev-tag">DEVELOPMENT PREVIEW</span>
+    </div>
+    <div style="font-size:12px;">
+      Target Integration: <code>Nuskha / PrescriptionScanner</code>
+    </div>
+  </div>
+
+  <!-- Main Root Container for Reusable Component -->
+  <div id="prescription-scanner-root"></div>
+
+  <!-- Stage 2 Modular Scripts -->
+  <script src="../src/data/medicines.js"></script>
+  <script src="../src/data/interactions.js"></script>
+  <script src="../src/matcher/textNormalizer.js"></script>
+  <script src="../src/matcher/medicineMatcher.js"></script>
+  <script src="../src/interactions/interactionScreen.js"></script>
+  <script src="../src/ocr/imageValidator.js"></script>
+  <script src="../src/ocr/ocrEngine.js"></script>
+  <script src="../src/components/PrescriptionScannerUI.js"></script>
+
+  <!-- Mount Component -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const rootEl = document.getElementById("prescription-scanner-root");
+      const scanner = new PrescriptionScannerUI(rootEl, {
+        title: "Prescription & Packaging Scanner",
+        subtitle: "Real-time client-side OCR, structured medicine matching, and interaction screening",
+        sampleImages: [
+          { name: "Printed Rx (Amoxil + Disprin + Panadol)", url: "../sample_images/sample_prescription_printed.svg" },
+          { name: "Augmentin 625mg Packaging Box", url: "../sample_images/sample_medicine_box.svg" },
+          { name: "High-Risk Pair (Disprin + Coumadin)", url: "../sample_images/sample_interaction_pair.svg" }
+        ],
+        onScanComplete: function (result) {
+          console.log("[Nuskha Stage 2] OCR & Screening Complete:", result);
+        }
+      });
+
+      scanner.mount();
+      window.scannerInstance = scanner;
+    });
+  </script>
+</body>
+</html>

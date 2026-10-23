@@ -1,0 +1,265 @@
+/**
+ * Nuskha AI - Stage 2 Prescription Scanner
+ * Documented Medicine Reference Dataset & Helper Queries
+ *
+ * Sources:
+ * - US FDA National Drug Code (NDC) Directory & DailyMed (NLM)
+ * - WHO Model List of Essential Medicines (23rd List, 2023)
+ * - British National Formulary (BNF 86, 2023-2024)
+ * - Electronic Medicines Compendium (emc)
+ */
+
+const medicinesData = [
+  {
+    id: "amoxicillin-500",
+    brandName: "Amoxil",
+    genericName: "Amoxicillin",
+    activeIngredient: "Amoxicillin Trihydrate",
+    aliases: ["Amoxil", "Amoxicillin", "Amox", "Amoxicilline"],
+    strength: "500 mg",
+    dosageForm: "Capsule",
+    category: "Broad-spectrum Penicillin Antibiotic",
+    source: "FDA NDC 50383-797-50 / WHO Model List of Essential Medicines (23rd List, 2023)",
+    notes: "Antibiotic indicated for susceptible bacterial infections. Informational reference only."
+  },
+  {
+    id: "augmentin-625",
+    brandName: "Augmentin",
+    genericName: "Amoxicillin / Clavulanic Acid",
+    activeIngredient: "Amoxicillin Trihydrate and Potassium Clavulanate",
+    aliases: ["Augmentin", "Clavam", "Amoxicillin Clavulanate", "Augmentin 625"],
+    strength: "500 mg / 125 mg (625 mg)",
+    dosageForm: "Film-coated Tablet",
+    category: "Beta-lactamase Inhibitor Combination Antibiotic",
+    source: "FDA NDA 050564 / British National Formulary (BNF 86)",
+    notes: "Used for bacterial infections producing beta-lactamase. Informational reference only."
+  },
+  {
+    id: "aspirin-100",
+    brandName: "Disprin",
+    genericName: "Aspirin",
+    activeIngredient: "Acetylsalicylic Acid",
+    aliases: ["Aspirin", "Disprin", "Ecosprin", "Bayer Aspirin", "ASA", "Acetylsalicylic Acid"],
+    strength: "100 mg",
+    dosageForm: "Soluble / Dispersible Tablet",
+    category: "NSAID / Antiplatelet Agent",
+    source: "FDA OTC Monograph M018 / WHO Model List of Essential Medicines",
+    notes: "Antiplatelet agent and analgesic. Informational reference only."
+  },
+  {
+    id: "ibuprofen-400",
+    brandName: "Brufen",
+    genericName: "Ibuprofen",
+    activeIngredient: "Ibuprofen",
+    aliases: ["Brufen", "Advil", "Motrin", "Ibuprofen", "Ibugesic"],
+    strength: "400 mg",
+    dosageForm: "Film-coated Tablet",
+    category: "Nonsteroidal Anti-inflammatory Drug (NSAID)",
+    source: "FDA NDA 017463 / British National Formulary (BNF 86)",
+    notes: "Analgesic and anti-inflammatory. Informational reference only."
+  },
+  {
+    id: "paracetamol-500",
+    brandName: "Panadol",
+    genericName: "Paracetamol",
+    activeIngredient: "Acetaminophen / Paracetamol",
+    aliases: ["Panadol", "Tylenol", "Calpol", "Paracetamol", "Acetaminophen", "Crocin", "Dolo"],
+    strength: "500 mg",
+    dosageForm: "Tablet",
+    category: "Analgesic and Antipyretic",
+    source: "FDA OTC Monograph M012 / WHO Model List of Essential Medicines",
+    notes: "Mild-to-moderate pain and fever reduction. Informational reference only."
+  },
+  {
+    id: "metformin-500",
+    brandName: "Glucophage",
+    genericName: "Metformin Hydrochloride",
+    activeIngredient: "Metformin Hydrochloride",
+    aliases: ["Glucophage", "Metformin", "Glycomet"],
+    strength: "500 mg",
+    dosageForm: "Extended-release Tablet",
+    category: "Biguanide Oral Antidiabetic",
+    source: "FDA NDA 020357 / WHO Model List of Essential Medicines",
+    notes: "First-line oral antihyperglycemic for Type 2 Diabetes. Informational reference only."
+  },
+  {
+    id: "atorvastatin-20",
+    brandName: "Lipitor",
+    genericName: "Atorvastatin Calcium",
+    activeIngredient: "Atorvastatin Calcium",
+    aliases: ["Lipitor", "Atorvastatin", "Atorva", "Storvas"],
+    strength: "20 mg",
+    dosageForm: "Tablet",
+    category: "HMG-CoA Reductase Inhibitor (Statin)",
+    source: "FDA NDA 020702 / British National Formulary (BNF 86)",
+    notes: "Lipid-lowering agent for hypercholesterolemia. Informational reference only."
+  },
+  {
+    id: "lisinopril-10",
+    brandName: "Zestril",
+    genericName: "Lisinopril",
+    activeIngredient: "Lisinopril Anhydrous",
+    aliases: ["Zestril", "Prinivil", "Lisinopril"],
+    strength: "10 mg",
+    dosageForm: "Tablet",
+    category: "Angiotensin-Converting Enzyme (ACE) Inhibitor",
+    source: "FDA NDA 019777 / WHO Model List of Essential Medicines",
+    notes: "Antihypertensive and heart failure management. Informational reference only."
+  },
+  {
+    id: "warfarin-5",
+    brandName: "Coumadin",
+    genericName: "Warfarin Sodium",
+    activeIngredient: "Warfarin Sodium Crystalline",
+    aliases: ["Coumadin", "Warfarin", "Jantoven", "Marevan"],
+    strength: "5 mg",
+    dosageForm: "Scored Tablet",
+    category: "Vitamin K Antagonist Anticoagulant",
+    source: "FDA NDA 009218 / British National Formulary (BNF 86)",
+    notes: "Anticoagulant requiring international normalized ratio (INR) monitoring. Informational reference only."
+  },
+  {
+    id: "omeprazole-20",
+    brandName: "Prilosec",
+    genericName: "Omeprazole",
+    activeIngredient: "Omeprazole Magnesium",
+    aliases: ["Prilosec", "Losec", "Omeprazole", "Omez"],
+    strength: "20 mg",
+    dosageForm: "Delayed-release Capsule",
+    category: "Proton Pump Inhibitor (PPI)",
+    source: "FDA NDA 019810 / WHO Model List of Essential Medicines",
+    notes: "Gastric acid secretion inhibitor for GERD and peptic ulcers. Informational reference only."
+  },
+  {
+    id: "clopidogrel-75",
+    brandName: "Plavix",
+    genericName: "Clopidogrel Bisulfate",
+    activeIngredient: "Clopidogrel Bisulfate",
+    aliases: ["Plavix", "Clopidogrel", "Clopilet", "Iscover"],
+    strength: "75 mg",
+    dosageForm: "Film-coated Tablet",
+    category: "Thienopyridine P2Y12 Antiplatelet",
+    source: "FDA NDA 020839 / British National Formulary (BNF 86)",
+    notes: "Inhibitor of platelet aggregation in acute coronary syndrome. Informational reference only."
+  },
+  {
+    id: "ciprofloxacin-500",
+    brandName: "Cipro",
+    genericName: "Ciprofloxacin",
+    activeIngredient: "Ciprofloxacin Hydrochloride",
+    aliases: ["Cipro", "Ciprofloxacin", "Ciprobay", "Ciplox"],
+    strength: "500 mg",
+    dosageForm: "Film-coated Tablet",
+    category: "Fluoroquinolone Antibacterial",
+    source: "FDA NDA 019537 / WHO Model List of Essential Medicines",
+    notes: "Broad-spectrum fluoroquinolone antibiotic. Informational reference only."
+  },
+  {
+    id: "clarithromycin-500",
+    brandName: "Biaxin",
+    genericName: "Clarithromycin",
+    activeIngredient: "Clarithromycin",
+    aliases: ["Biaxin", "Clarithromycin", "Klaricid"],
+    strength: "500 mg",
+    dosageForm: "Tablet",
+    category: "Macrolide Antibacterial",
+    source: "FDA NDA 050662 / British National Formulary (BNF 86)",
+    notes: "Macrolide antibiotic with potent CYP3A4 inhibition profile. Informational reference only."
+  },
+  {
+    id: "sertraline-50",
+    brandName: "Zoloft",
+    genericName: "Sertraline Hydrochloride",
+    activeIngredient: "Sertraline Hydrochloride",
+    aliases: ["Zoloft", "Sertraline", "Lustral", "Daxid"],
+    strength: "50 mg",
+    dosageForm: "Film-coated Tablet",
+    category: "Selective Serotonin Reuptake Inhibitor (SSRI)",
+    source: "FDA NDA 019839 / WHO Model List of Essential Medicines",
+    notes: "Antidepressant for major depressive disorder and anxiety. Informational reference only."
+  },
+  {
+    id: "tramadol-50",
+    brandName: "Ultram",
+    genericName: "Tramadol Hydrochloride",
+    activeIngredient: "Tramadol Hydrochloride",
+    aliases: ["Ultram", "Tramadol", "Tramal", "Zydol"],
+    strength: "50 mg",
+    dosageForm: "Tablet",
+    category: "Centrally Acting Opioid Analgesic / SNRI",
+    source: "FDA NDA 020281 / British National Formulary (BNF 86)",
+    notes: "Opioid analgesic with dual monoaminergic activity. Informational reference only."
+  },
+  {
+    id: "potassium-chloride-600",
+    brandName: "K-Lyte",
+    genericName: "Potassium Chloride",
+    activeIngredient: "Potassium Chloride",
+    aliases: ["K-Lyte", "Slow-K", "Potassium Chloride", "K-Dur", "Potassium"],
+    strength: "600 mg (8 mEq)",
+    dosageForm: "Extended-release Tablet",
+    category: "Electrolyte Supplement",
+    source: "FDA NDA 018270 / WHO Model List of Essential Medicines",
+    notes: "Electrolyte replenisher for hypokalemia prevention/treatment. Informational reference only."
+  },
+  {
+    id: "aluminum-magnesium-antacid",
+    brandName: "Maalox",
+    genericName: "Aluminum Hydroxide and Magnesium Hydroxide",
+    activeIngredient: "Aluminum Hydroxide and Magnesium Hydroxide",
+    aliases: ["Maalox", "Mylanta", "Gelusil", "Antacid", "Magnesium Hydroxide"],
+    strength: "200 mg / 200 mg per 5 mL",
+    dosageForm: "Oral Suspension / Chewable Tablet",
+    category: "Antacid / Cationic Chelation Agent",
+    source: "FDA OTC Monograph M001 / British National Formulary (BNF 86)",
+    notes: "Symptomatic relief of dyspepsia and hyperacidity. Informational reference only."
+  },
+  {
+    id: "methotrexate-2.5",
+    brandName: "Trexall",
+    genericName: "Methotrexate",
+    activeIngredient: "Methotrexate Sodium",
+    aliases: ["Trexall", "Methotrexate", "Rheumatrex"],
+    strength: "2.5 mg",
+    dosageForm: "Tablet",
+    category: "Antimetabolite / DMARD / Antineoplastic",
+    source: "FDA NDA 011719 / WHO Model List of Essential Medicines",
+    notes: "Immunosuppressive agent for rheumatoid arthritis and psoriasis. Informational reference only."
+  }
+];
+
+function getAllMedicines() {
+  return medicinesData;
+}
+
+function getMedicineById(id) {
+  return medicinesData.find(m => m.id === id) || null;
+}
+
+function findMedicineByName(name) {
+  if (!name) return null;
+  const clean = name.trim().toLowerCase();
+  return medicinesData.find(m => {
+    if (m.brandName.toLowerCase() === clean) return true;
+    if (m.genericName.toLowerCase() === clean) return true;
+    return m.aliases.some(a => a.toLowerCase() === clean);
+  }) || null;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = {
+    medicinesData,
+    getAllMedicines,
+    getMedicineById,
+    findMedicineByName
+  };
+}
+
+if (typeof window !== "undefined") {
+  window.NuskhaMedicines = {
+    medicinesData,
+    getAllMedicines,
+    getMedicineById,
+    findMedicineByName
+  };
+}

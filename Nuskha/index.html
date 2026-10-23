@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nuskha AI | Visual Dosage Assistant & Medication Platform</title>
   <meta name="description" content="Nuskha AI - Modern, accessible medication assistance web application with visual dosage schedules, Urdu & Sindhi accessibility, prescription scanning shell, and generic medicine matching.">
+  <!-- Stage 2 Modular Stylesheet & Tesseract.js OCR Engine -->
+  <link rel="stylesheet" href="./styles/scanner.css">
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
     /* ==========================================================================
        1. CSS VARIABLES & RESET - NUSKHA AI DESIGN SYSTEM
@@ -1474,6 +1477,26 @@
     /* ==========================================================================
        10. RESPONSIVE DESIGN & PRINT OPTIMIZATION
        ========================================================================== */
+    body.rtl-active .dosage-workspace,
+    body.rtl-active .dosage-toolbar,
+    body.rtl-active .dosage-form-card,
+    body.rtl-active .dosage-display-card {
+      text-align: right;
+    }
+    body.rtl-active .form-group label {
+      text-align: right;
+    }
+    body.rtl-active .time-slot-check {
+      flex-direction: row-reverse;
+      justify-content: flex-end;
+    }
+    body.rtl-active .dose-item-top {
+      flex-direction: row-reverse;
+    }
+    body.rtl-active .dose-item-actions {
+      justify-content: flex-start;
+    }
+
     @media (max-width: 960px) {
       .cards-grid { grid-template-columns: 1fr; }
       .steps-row { grid-template-columns: 1fr; }
@@ -1616,11 +1639,12 @@
           <h3>Prescription Scanner</h3>
           <p>Digitize prescription items, verify strength and dosage frequencies, and seamlessly bridge confirmed items to the Dosage Assistant for review.</p>
           <div class="card-tags">
-            <span class="tag-chip">OCR Upload Shell</span>
+            <span class="tag-chip">Real Client-side OCR</span>
+            <span class="tag-chip">Drug Interaction Screen</span>
             <span class="tag-chip">Stage 2/3 Bridge</span>
           </div>
           <button class="card-btn" onclick="navigateTo('scanner')">
-            Open Scanner Shell &rarr;
+            Open Prescription Scanner &rarr;
           </button>
         </article>
 
@@ -1690,111 +1714,19 @@
     </section>
 
     <!-- ========================================================================
-         VIEW 2: PRESCRIPTION SCANNER (WITH BRIDGE TO DOSAGE ASSISTANT)
+         VIEW 2: PRESCRIPTION SCANNER (INTEGRATED STAGE 2 OCR & SCREENING)
          ======================================================================== -->
     <section class="view-section" id="view-scanner" role="tabpanel" aria-labelledby="nav-scanner">
       <div class="section-header">
         <span class="breadcrumb" onclick="navigateTo('dashboard')">&larr; Return to Dashboard</span>
         <h2>Prescription Scanner & Medication Safety Checks</h2>
-        <p>Digitize and extract prescribed medications, verify dosage strength, and bridge confirmed items directly into the Visual Dosage Assistant for schedule review.</p>
+        <p>Real-time client-side Optical Character Recognition (OCR), structured medicine matching against documented regulatory reference datasets, and clinical drug interaction screening.</p>
       </div>
 
-      <div class="scanner-layout">
-        <!-- Input & Upload Shell -->
-        <div class="upload-box">
-          <div class="dropzone" id="dropzone" onclick="triggerFileInput()">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="17 8 12 3 7 8"></polyline>
-              <line x1="12" y1="3" x2="12" y2="15"></line>
-            </svg>
-            <h4>Upload Prescription Document</h4>
-            <p>Drag and drop image (JPG, PNG) or document file here</p>
-            <span class="browse-btn">Select Local File</span>
-            <input type="file" id="prescriptionFileInput" style="display: none;" accept="image/*,.pdf" onchange="handleFileSelect(event)">
-          </div>
-
-          <div class="scanner-presets">
-            <h5>Demo Presets (Test Extraction & Bridge to Stage 3)</h5>
-            <div class="preset-chips">
-              <button class="preset-btn" id="preset-1" onclick="loadSamplePrescription(1)">
-                <span><strong>Sample 1:</strong> Dual Therapy (Antibiotic + Analgesic)</span>
-                <span>Load &rarr;</span>
-              </button>
-              <button class="preset-btn" id="preset-2" onclick="loadSamplePrescription(2)">
-                <span><strong>Sample 2:</strong> Metabolic Care (Metformin + Statin)</span>
-                <span>Load &rarr;</span>
-              </button>
-              <button class="preset-btn" id="preset-clear" onclick="clearPrescription()">
-                <span>Clear / Empty State</span>
-                <span>Reset</span>
-              </button>
-            </div>
-          </div>
-
-          <div class="safety-notice-box" style="margin-top: 1.25rem;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="8" x2="12" y2="12"></line>
-              <line x1="12" y1="16" x2="12.01" y2="16"></line>
-            </svg>
-            <div>
-              <strong>Privacy Protection:</strong> Do not upload sensitive personally identifiable medical data. Prototype operations are local to your browser session.
-            </div>
-          </div>
-        </div>
-
-        <!-- Output / Extraction Shell -->
-        <div class="scanner-output">
-          <div class="scanner-output-header">
-            <h3 style="font-size: 1.05rem; font-weight: 700;">Extraction & Safety Shell</h3>
-            <span class="status-badge idle" id="scannerStatusBadge">
-              <span style="width: 8px; height: 8px; border-radius: 50%; background: currentColor;"></span>
-              Awaiting Input
-            </span>
-          </div>
-
-          <!-- Empty State (Default) -->
-          <div class="empty-state" id="scannerEmptyState">
-            <div class="empty-icon">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="12" y1="18" x2="12" y2="12"></line>
-                <line x1="9" y1="15" x2="15" y2="15"></line>
-              </svg>
-            </div>
-            <h4>No Prescription Loaded</h4>
-            <p>Select a local file or click one of the demo presets on the left to preview structured extraction cards.</p>
-          </div>
-
-          <!-- Extracted Data Container (Populated via JS) -->
-          <div class="extracted-data" id="extractedDataView">
-            <div id="medListContainer"></div>
-
-            <div class="safety-notice-box" id="safetyAlertBox" style="display: none;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                <line x1="12" y1="9" x2="12" y2="13"></line>
-                <line x1="12" y1="17" x2="12.01" y2="17"></line>
-              </svg>
-              <div>
-                <strong>Safety Guardrail Check:</strong>
-                <p id="safetyAlertText" style="margin-top: 0.2rem;"></p>
-              </div>
-            </div>
-
-            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem; text-align: center;">
-              * Note: You can transfer any extracted medication into the Stage 3 Dosage Assistant for schedule review.
-            </p>
-          </div>
-        </div>
-      </div>
+      <!-- Stage 2 Reusable Prescription Scanner Mount Container -->
+      <div id="prescription-scanner-root"></div>
     </section>
 
-    <!-- ========================================================================
-         VIEW 3: VISUAL DOSAGE ASSISTANT (STAGE 3 FUNCTIONAL MODULE)
-         ======================================================================== -->
     <section class="view-section" id="view-dosage" role="tabpanel" aria-labelledby="nav-dosage">
       <div class="section-header">
         <span class="breadcrumb" onclick="navigateTo('dashboard')">&larr; Return to Dashboard</span>
@@ -2165,6 +2097,16 @@
        11. JAVASCRIPT: APPLICATION LOGIC & STAGE 3 DOSAGE ASSISTANT SUITE
        ========================================================================== */
   -->
+  <!-- Stage 2 Modular Scripts -->
+  <script src="./src/data/medicines.js"></script>
+  <script src="./src/data/interactions.js"></script>
+  <script src="./src/matcher/textNormalizer.js"></script>
+  <script src="./src/matcher/medicineMatcher.js"></script>
+  <script src="./src/interactions/interactionScreen.js"></script>
+  <script src="./src/ocr/imageValidator.js"></script>
+  <script src="./src/ocr/ocrEngine.js"></script>
+  <script src="./src/components/PrescriptionScannerUI.js"></script>
+
   <script>
     /**
      * Nuskha AI - Stage 3 Implementation
@@ -2357,14 +2299,14 @@
     // =========================================================================
 
     /**
-     * Inspects text for ambiguous prescription shorthand or missing information.
+     * Inspects text for ambiguous prescription shorthand, missing information, or contradictory timings.
      * Never guesses frequencies. Requires explicit confirmation.
      */
-    function detectAmbiguities(text, selectedSlots) {
+    function detectAmbiguities(text, selectedSlots, meal) {
       const lower = text.toLowerCase().trim();
       const issues = [];
 
-      // Flag ambiguous abbreviations
+      // 1. Flag ambiguous abbreviations
       if (/\b(as directed|as required|as needed|prn|sos|ud|ut dict|take as instructed)\b/i.test(lower) && selectedSlots.length === 0) {
         issues.push("The instruction specifies 'as directed' or 'as needed' without indicating safe daily intervals or times.");
       }
@@ -2379,6 +2321,34 @@
 
       if (lower.length < 5) {
         issues.push("Instruction text is too short or incomplete. Please type the full doctor instruction from the prescription.");
+      }
+
+      // 2. Contradictory Frequency Detection
+      const regularSlots = selectedSlots.filter(s => s !== 'prn');
+      if (/\b(once daily|once a day|\bod\b|1x daily|q24h|single dose)\b/i.test(lower) && regularSlots.length > 1) {
+        issues.push("Contradictory frequency: The instruction specifies 'once daily' (OD), but multiple daily time slots were selected. Please verify with doctor or pharmacist.");
+      }
+
+      if (/\b(twice daily|\bbd\b|\bbid\b|2x daily|q12h)\b/i.test(lower) && regularSlots.length > 2) {
+        issues.push("Contradictory frequency: The instruction specifies 'twice daily' (BD), but more than two daily time slots were selected.");
+      }
+
+      // 3. Contradictory Timing Detection
+      if (/\b(in the morning|morning only|with breakfast|after breakfast)\b/i.test(lower) && !selectedSlots.includes('morning')) {
+        issues.push("Contradictory timing: The prescription states morning administration, but the Morning slot was not selected.");
+      }
+
+      if (/\b(at bedtime|at night|bedtime only|night only|before sleep)\b/i.test(lower) && !selectedSlots.includes('bedtime') && !selectedSlots.includes('evening')) {
+        issues.push("Contradictory timing: The prescription states night/bedtime administration, but Bedtime/Evening was not selected.");
+      }
+
+      // 4. Contradictory Meal Relationship Detection
+      if (/\b(empty stomach|before food|before meal|before breakfast)\b/i.test(lower) && meal === 'after_food') {
+        issues.push("Contradictory meal instruction: The prescription states empty stomach/before meals, but 'After Food' was selected.");
+      }
+
+      if (/\b(after food|after meal|with food|after lunch|after dinner)\b/i.test(lower) && meal === 'before_food') {
+        issues.push("Contradictory meal instruction: The prescription states after/with meals, but 'Before Food' was selected.");
       }
 
       return issues;
@@ -2404,12 +2374,12 @@
 
       // Ambiguity & Safety Validation Check
       const alertBox = document.getElementById('formValidationAlert');
-      const ambiguityIssues = detectAmbiguities(instruction, selectedSlots);
+      const ambiguityIssues = detectAmbiguities(instruction, selectedSlots, meal);
 
       if (ambiguityIssues.length > 0) {
         alertBox.style.display = 'block';
         alertBox.innerHTML = `
-          <strong>⚠️ Prescriber Instruction Ambiguity Detected:</strong><br>
+          <strong>⚠️ Prescriber Instruction Ambiguity / Contradiction Detected:</strong><br>
           ${ambiguityIssues.map(issue => `&bull; ${issue}`).join('<br>')}<br>
           <span style="display:block;margin-top:0.4rem;font-weight:600;">
             Please verify with your doctor or pharmacist. The application will not guess unconfirmed timings.
@@ -2439,11 +2409,19 @@
         confirmedMedications.push(medEntry);
       }
 
+      // Persist in localStorage
+      try {
+        localStorage.setItem('nuskha_confirmed_medications', JSON.stringify(confirmedMedications));
+      } catch(e) {}
+
       // Reset form and inbound banner
       resetDoseForm();
       document.getElementById('bridgeInboundNotice').style.display = 'none';
 
       // Render updated visual schedule
+      try {
+        localStorage.setItem('nuskha_confirmed_medications', JSON.stringify(confirmedMedications));
+      } catch(e) {}
       renderVisualSchedule();
     }
 
@@ -2482,6 +2460,9 @@
     function deleteMedication(index) {
       if (confirm("Remove this medication from the visual schedule?")) {
         confirmedMedications.splice(index, 1);
+        try {
+          localStorage.setItem('nuskha_confirmed_medications', JSON.stringify(confirmedMedications));
+        } catch(e) {}
         renderVisualSchedule();
       }
     }
@@ -2490,6 +2471,9 @@
       if (confirmedMedications.length === 0) return;
       if (confirm("Clear all items from the current schedule?")) {
         confirmedMedications = [];
+        try {
+          localStorage.removeItem('nuskha_confirmed_medications');
+        } catch(e) {}
         resetDoseForm();
         renderVisualSchedule();
       }
@@ -2599,6 +2583,16 @@
     function setLanguage(langKey) {
       currentLanguage = langKey;
 
+      if (langKey === 'ur' || langKey === 'sd') {
+        document.documentElement.setAttribute('dir', 'rtl');
+        document.documentElement.setAttribute('lang', langKey);
+        document.body.classList.add('rtl-active');
+      } else {
+        document.documentElement.setAttribute('dir', 'ltr');
+        document.documentElement.setAttribute('lang', 'en');
+        document.body.classList.remove('rtl-active');
+      }
+
       ['en', 'ur', 'sd'].forEach(l => {
         const btn = document.getElementById(`lang-${l}`);
         if (btn) btn.classList.toggle('active', l === langKey);
@@ -2644,6 +2638,9 @@
       document.getElementById('masterSpeechBtnText').textContent = isSpeaking ? strings.audioBtnStop : strings.audioBtnMaster;
 
       // Re-render schedule with localized strings
+      try {
+        localStorage.setItem('nuskha_confirmed_medications', JSON.stringify(confirmedMedications));
+      } catch(e) {}
       renderVisualSchedule();
     }
 
@@ -2904,159 +2901,51 @@
           }
         ];
       }
+      try {
+        localStorage.setItem('nuskha_confirmed_medications', JSON.stringify(confirmedMedications));
+      } catch(e) {}
       renderVisualSchedule();
     }
 
+        // =========================================================================
+    // 8. Integrated Stage 2 Prescription Scanner Controller & Bridge
     // =========================================================================
-    // 8. Prescription Scanner Helper Functions
-    // =========================================================================
-    function triggerFileInput() {
-      document.getElementById('prescriptionFileInput').click();
+    let scannerInstance = null;
+
+    function initPrescriptionScanner() {
+      const rootEl = document.getElementById("prescription-scanner-root");
+      if (!rootEl) return;
+
+      scannerInstance = new PrescriptionScannerUI(rootEl, {
+        title: "Prescription & Packaging Scanner",
+        subtitle: "Real-time client-side OCR, structured medicine matching, and interaction screening",
+        sampleImages: [
+          { name: "Printed Rx (Amoxil + Disprin + Panadol)", url: "./sample_images/sample_prescription_printed.svg" },
+          { name: "Augmentin 625mg Packaging Box", url: "./sample_images/sample_medicine_box.svg" },
+          { name: "High-Risk Pair (Disprin + Coumadin)", url: "./sample_images/sample_interaction_pair.svg" }
+        ],
+        onScanComplete: function(result) {
+          console.log("[Nuskha Stage 2] OCR & Screening Complete:", result);
+        },
+        onTransferToDosage: function(med) {
+          const medName = med.brandName || med.genericName || "Medication";
+          const strength = med.strength || "";
+          const ingredient = med.activeIngredient || med.genericName || "";
+          transferToDosageAssistant(
+            medName,
+            strength,
+            `Prescribed: ${medName} (${ingredient}) ${strength}`,
+            ['morning'],
+            'after_food'
+          );
+        }
+      });
+
+      scannerInstance.mount();
+      window.scannerInstance = scannerInstance;
     }
 
-    function handleFileSelect(event) {
-      const file = event.target.files[0];
-      if (file) {
-        renderCustomScanResult(file.name);
-      }
-    }
-
-    function renderCustomScanResult(filename) {
-      const emptyState = document.getElementById('scannerEmptyState');
-      const dataView = document.getElementById('extractedDataView');
-      const statusBadge = document.getElementById('scannerStatusBadge');
-      const container = document.getElementById('medListContainer');
-      const alertBox = document.getElementById('safetyAlertBox');
-      const alertText = document.getElementById('safetyAlertText');
-
-      emptyState.style.display = 'none';
-      dataView.style.display = 'block';
-      statusBadge.className = 'status-badge active';
-      statusBadge.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:currentColor;"></span> File Loaded: ${filename}`;
-
-      container.innerHTML = `
-        <div class="med-card">
-          <div class="med-card-header">
-            <span class="med-card-title">Uploaded Document: ${filename}</span>
-            <span class="med-pill-badge">Image Parsed</span>
-          </div>
-          <p style="font-size: 0.85rem; color: var(--text-body); margin-top: 0.25rem;">
-            Document ingested successfully. Optical character recognition and prescription entity extraction will execute via Stage 2 model services.
-          </p>
-          <div class="med-specs">
-            <div class="spec-item"><span>Format:</span> Image/Document</div>
-            <div class="spec-item"><span>Privacy Mode:</span> Local Memory Only</div>
-            <div class="spec-item"><span>Status:</span> Ready for Review</div>
-          </div>
-          <button type="button" class="transfer-bridge-btn" onclick="transferToDosageAssistant('Prescription Item (${filename})', '', 'Take as directed by doctor', ['morning', 'bedtime'], 'after_food')">
-            Transfer to Dosage Assistant for Review &rarr;
-          </button>
-        </div>
-      `;
-
-      alertBox.style.display = 'flex';
-      alertText.textContent = "Informational Verification: Please verify extracted items with the physical prescription slip.";
-    }
-
-    function loadSamplePrescription(sampleId) {
-      const emptyState = document.getElementById('scannerEmptyState');
-      const dataView = document.getElementById('extractedDataView');
-      const statusBadge = document.getElementById('scannerStatusBadge');
-      const container = document.getElementById('medListContainer');
-      const alertBox = document.getElementById('safetyAlertBox');
-      const alertText = document.getElementById('safetyAlertText');
-
-      document.getElementById('preset-1').classList.toggle('active', sampleId === 1);
-      document.getElementById('preset-2').classList.toggle('active', sampleId === 2);
-
-      emptyState.style.display = 'none';
-      dataView.style.display = 'block';
-      statusBadge.className = 'status-badge active';
-      statusBadge.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:currentColor;"></span> Sample ${sampleId} Loaded`;
-
-      if (sampleId === 1) {
-        container.innerHTML = `
-          <div class="med-card">
-            <div class="med-card-header">
-              <span class="med-card-title">1. Amoxicillin Trihydrate</span>
-              <span class="med-pill-badge">Oral Capsule</span>
-            </div>
-            <div class="med-specs">
-              <div class="spec-item"><span>Strength:</span> 500 mg</div>
-              <div class="spec-item"><span>Frequency:</span> TDS (3x daily)</div>
-              <div class="spec-item"><span>Duration:</span> 5 Days</div>
-            </div>
-            <button type="button" class="transfer-bridge-btn" onclick="transferToDosageAssistant('Amoxicillin Trihydrate', '500 mg Capsule', 'Take 1 capsule 3 times daily after meals for 5 days', ['morning', 'afternoon', 'bedtime'], 'after_food')">
-              Transfer to Dosage Assistant for Review &rarr;
-            </button>
-          </div>
-
-          <div class="med-card">
-            <div class="med-card-header">
-              <span class="med-card-title">2. Paracetamol</span>
-              <span class="med-pill-badge">Oral Tablet</span>
-            </div>
-            <div class="med-specs">
-              <div class="spec-item"><span>Strength:</span> 500 mg</div>
-              <div class="spec-item"><span>Frequency:</span> PRN (As needed)</div>
-              <div class="spec-item"><span>Max Daily:</span> &le; 4000 mg</div>
-            </div>
-            <button type="button" class="transfer-bridge-btn" onclick="transferToDosageAssistant('Paracetamol', '500 mg Tablet', 'Take 1 tablet as needed for fever or pain', ['prn'], 'prn_fever')">
-              Transfer to Dosage Assistant for Review &rarr;
-            </button>
-          </div>
-        `;
-        alertBox.style.display = 'flex';
-        alertText.textContent = "Safety Check: Verify patient has no known penicillin allergies before Amoxicillin therapy. Do not exceed max paracetamol daily threshold.";
-      } else if (sampleId === 2) {
-        container.innerHTML = `
-          <div class="med-card">
-            <div class="med-card-header">
-              <span class="med-card-title">1. Metformin Hydrochloride</span>
-              <span class="med-pill-badge">Oral Tablet</span>
-            </div>
-            <div class="med-specs">
-              <div class="spec-item"><span>Strength:</span> 500 mg</div>
-              <div class="spec-item"><span>Frequency:</span> BD (Twice daily)</div>
-              <div class="spec-item"><span>Instruction:</span> With meals</div>
-            </div>
-            <button type="button" class="transfer-bridge-btn" onclick="transferToDosageAssistant('Metformin Hydrochloride', '500 mg Tablet', 'Take 1 tablet twice daily with meals', ['morning', 'evening'], 'with_food')">
-              Transfer to Dosage Assistant for Review &rarr;
-            </button>
-          </div>
-
-          <div class="med-card">
-            <div class="med-card-header">
-              <span class="med-card-title">2. Atorvastatin</span>
-              <span class="med-pill-badge">Oral Tablet</span>
-            </div>
-            <div class="med-specs">
-              <div class="spec-item"><span>Strength:</span> 20 mg</div>
-              <div class="spec-item"><span>Frequency:</span> OD (At Bedtime)</div>
-              <div class="spec-item"><span>Duration:</span> Long-term</div>
-            </div>
-            <button type="button" class="transfer-bridge-btn" onclick="transferToDosageAssistant('Atorvastatin', '20 mg Tablet', 'Take 1 tablet daily at bedtime', ['bedtime'], 'after_food')">
-              Transfer to Dosage Assistant for Review &rarr;
-            </button>
-          </div>
-        `;
-        alertBox.style.display = 'flex';
-        alertText.textContent = "Safety Check: Renal monitoring advised for Metformin. Take Atorvastatin at evening/bedtime for optimal lipid metabolism.";
-      }
-    }
-
-    function clearPrescription() {
-      document.getElementById('scannerEmptyState').style.display = 'block';
-      document.getElementById('extractedDataView').style.display = 'none';
-      const statusBadge = document.getElementById('scannerStatusBadge');
-      statusBadge.className = 'status-badge idle';
-      statusBadge.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:currentColor;"></span> Awaiting Input`;
-
-      document.getElementById('preset-1').classList.remove('active');
-      document.getElementById('preset-2').classList.remove('active');
-    }
-
-    // =========================================================================
+// =========================================================================
     // 9. Generic Matcher Engine
     // =========================================================================
     function renderGenericTable(data) {
@@ -3118,11 +3007,29 @@
     // 10. Application Initialization
     // =========================================================================
     window.addEventListener('DOMContentLoaded', () => {
+      // Initialize Stage 2 Prescription Scanner
+      initPrescriptionScanner();
+
       // 1. Initialize generic matcher table
       renderGenericTable(GENERIC_CATALOG);
 
-      // 2. Load default verified schedule preset for demo
-      loadSchedulePreset(1);
+      // 2. Load schedule from localStorage or default verified schedule preset for demo
+      try {
+        const saved = localStorage.getItem('nuskha_confirmed_medications');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            confirmedMedications = parsed;
+            renderVisualSchedule();
+          } else {
+            loadSchedulePreset(1);
+          }
+        } else {
+          loadSchedulePreset(1);
+        }
+      } catch(e) {
+        loadSchedulePreset(1);
+      }
 
       // 3. Initialize voices when browser loads them
       if ('speechSynthesis' in window) {
