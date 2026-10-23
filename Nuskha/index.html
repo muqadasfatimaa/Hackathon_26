@@ -1,0 +1,3144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nuskha AI | Visual Dosage Assistant & Medication Platform</title>
+  <meta name="description" content="Nuskha AI - Modern, accessible medication assistance web application with visual dosage schedules, Urdu & Sindhi accessibility, prescription scanning shell, and generic medicine matching.">
+  <style>
+    /* ==========================================================================
+       1. CSS VARIABLES & RESET - NUSKHA AI DESIGN SYSTEM
+       ========================================================================== */
+    :root {
+      --primary: #0d9488;
+      --primary-hover: #0f766e;
+      --primary-light: #f0fdfa;
+      --primary-border: #99f6e4;
+      --accent: #2563eb;
+      --accent-light: #eff6ff;
+      --accent-border: #bfdbfe;
+      --bg-main: #f8fafc;
+      --bg-card: #ffffff;
+      --text-title: #0f172a;
+      --text-body: #334155;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --border-subtle: #f1f5f9;
+      --success-bg: #f0fdf4;
+      --success-text: #166534;
+      --success-border: #bbf7d0;
+      --warning-bg: #fffbeb;
+      --warning-text: #92400e;
+      --warning-border: #fde68a;
+      --danger-bg: #fef2f2;
+      --danger-text: #991b1b;
+      --danger-border: #fecaca;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+      --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-rtl: "Noto Nastaliq Urdu", "Segoe UI", Tahoma, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg-main);
+      color: var(--text-body);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
+       2. TOP CLINICAL DISCLAIMER BAR
+       ========================================================================== */
+    .top-disclaimer {
+      background: #fef3c7;
+      color: #92400e;
+      border-bottom: 1px solid #fde68a;
+      padding: 0.6rem 1rem;
+      font-size: 0.825rem;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-weight: 500;
+    }
+    .top-disclaimer svg {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+    }
+
+    /* ==========================================================================
+       3. NAVIGATION & HEADER
+       ========================================================================== */
+    header.app-header {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--primary) 0%, #0284c7 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 2px 6px rgba(13, 148, 136, 0.3);
+    }
+
+    .brand-title h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-title);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .brand-title .badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--primary);
+      background: var(--primary-light);
+      border: 1px solid var(--primary-border);
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      display: inline-block;
+      margin-left: 0.35rem;
+      vertical-align: middle;
+    }
+
+    .brand-title p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Navigation Links */
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      list-style: none;
+    }
+
+    .nav-item {
+      padding: 0.5rem 0.9rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-body);
+      transition: all 0.15s ease-in-out;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 1px solid transparent;
+      background: transparent;
+    }
+
+    .nav-item:hover {
+      background: var(--bg-main);
+      color: var(--primary-hover);
+    }
+
+    .nav-item.active {
+      background: var(--primary-light);
+      color: var(--primary-hover);
+      border-color: var(--primary-border);
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: 1px solid var(--border-color);
+      padding: 0.4rem 0.6rem;
+      border-radius: var(--radius-sm);
+      color: var(--text-title);
+    }
+
+    /* ==========================================================================
+       4. MAIN CONTAINER & VIEW SECTIONS
+       ========================================================================== */
+    main.main-content {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.75rem 1.25rem 3rem 1.25rem;
+      flex: 1;
+    }
+
+    .view-section {
+      display: none;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Section Headers */
+    .section-header {
+      margin-bottom: 1.75rem;
+    }
+
+    .section-header .breadcrumb {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+    }
+
+    .section-header h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-title);
+      letter-spacing: -0.02em;
+    }
+
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-top: 0.25rem;
+      max-width: 780px;
+    }
+
+    /* ==========================================================================
+       5. DASHBOARD VIEW STYLING
+       ========================================================================== */
+    .hero-banner {
+      background: linear-gradient(135deg, #0d9488 0%, #0369a1 100%);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem 2rem;
+      color: white;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-banner::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      bottom: -30px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
+      border-radius: 50%;
+    }
+
+    .hero-content {
+      max-width: 700px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(4px);
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      margin-bottom: 0.85rem;
+    }
+
+    .hero-banner h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-banner p {
+      font-size: 1.05rem;
+      color: #e0f2fe;
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .hero-pill {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      position: relative;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary-border);
+    }
+
+    .card-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .icon-teal { background: #ccfbf1; color: #0f766e; }
+    .icon-blue { background: #dbeafe; color: #1d4ed8; }
+    .icon-emerald { background: #d1fae5; color: #047857; }
+
+    .feature-card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-title);
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-card p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+      flex: 1;
+      line-height: 1.5;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .tag-chip {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-main);
+      color: var(--text-body);
+      border: 1px solid var(--border-color);
+    }
+
+    .card-btn {
+      width: 100%;
+      background: var(--bg-main);
+      color: var(--text-title);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.65rem 1rem;
+      font-weight: 600;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: all 0.15s ease;
+    }
+
+    .feature-card:hover .card-btn {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .info-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .info-panel h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-title);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .steps-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+
+    .step-item {
+      background: var(--bg-main);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .step-number {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step-text h4 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-title);
+      margin-bottom: 0.2rem;
+    }
+
+    .step-text p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       6. PRESCRIPTION SCANNER VIEW (WITH STAGE 2 -> STAGE 3 BRIDGE)
+       ========================================================================== */
+    .scanner-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .upload-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .dropzone {
+      border: 2px dashed var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 2.25rem 1.5rem;
+      text-align: center;
+      background: var(--bg-main);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .dropzone:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .dropzone svg {
+      color: var(--primary);
+      margin-bottom: 0.75rem;
+    }
+
+    .dropzone h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-title);
+      margin-bottom: 0.25rem;
+    }
+
+    .dropzone p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .browse-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-title);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.45rem 1rem;
+      border-radius: var(--radius-sm);
+      display: inline-block;
+    }
+
+    .scanner-presets {
+      margin-top: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .scanner-presets h5 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.6rem;
+    }
+
+    .preset-chips {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .preset-btn {
+      text-align: left;
+      padding: 0.55rem 0.75rem;
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      color: var(--text-body);
+      transition: all 0.15s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .preset-btn:hover {
+      background: var(--primary-light);
+      border-color: var(--primary-border);
+      color: var(--primary-hover);
+    }
+
+    .preset-btn.active {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary-hover);
+      font-weight: 600;
+    }
+
+    .scanner-output {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      min-height: 480px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .scanner-output-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .status-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .status-badge.idle {
+      background: var(--bg-main);
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+    }
+
+    .status-badge.active {
+      background: var(--success-bg);
+      color: var(--success-text);
+      border: 1px solid var(--success-border);
+    }
+
+    .empty-state {
+      margin: auto 0;
+      text-align: center;
+      padding: 3rem 1.5rem;
+    }
+
+    .empty-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--bg-main);
+      border: 1px dashed var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem auto;
+      color: var(--text-muted);
+    }
+
+    .empty-state h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-title);
+      margin-bottom: 0.35rem;
+    }
+
+    .empty-state p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      max-width: 360px;
+      margin: 0 auto 1.25rem auto;
+    }
+
+    .extracted-data { display: none; }
+
+    .med-card {
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background: var(--bg-main);
+    }
+
+    .med-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.5rem;
+    }
+
+    .med-card-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-title);
+    }
+
+    .med-pill-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: var(--accent-light);
+      color: var(--accent);
+      border: 1px solid var(--accent-border);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+    }
+
+    .med-specs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+    }
+
+    .spec-item {
+      background: var(--bg-card);
+      padding: 0.4rem 0.6rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+    }
+
+    .spec-item span {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .transfer-bridge-btn {
+      margin-top: 0.75rem;
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--primary-border);
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 0.8rem;
+      padding: 0.5rem;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: all 0.15s ease;
+    }
+    .transfer-bridge-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .safety-notice-box {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+      font-size: 0.825rem;
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.6rem;
+      align-items: flex-start;
+    }
+
+    /* ==========================================================================
+       7. VISUAL DOSAGE ASSISTANT (STAGE 3 FUNCTIONAL SUITE)
+       ========================================================================== */
+    .dosage-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .lang-selector-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .lang-selector-label {
+      font-size: 0.825rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .lang-btn-group {
+      display: inline-flex;
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 2px;
+    }
+
+    .lang-btn {
+      background: transparent;
+      border: none;
+      padding: 0.35rem 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-body);
+      border-radius: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .lang-btn.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .audio-global-btn {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1d4ed8;
+      padding: 0.4rem 0.9rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.825rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.15s ease;
+    }
+    .audio-global-btn.speaking {
+      background: #fee2e2;
+      border-color: #fca5a5;
+      color: #b91c1c;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+      70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
+    /* Dosage Assistant 2-Column Workspace (Input Form + Live Visual Schedule) */
+    .dosage-workspace {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+      margin-bottom: 2rem;
+    }
+
+    .dosage-form-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .dosage-form-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-title);
+      margin-bottom: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .dosage-form-card p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--text-title);
+      margin-bottom: 0.35rem;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 0.6rem 0.8rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-family: inherit;
+      color: var(--text-title);
+      background: var(--bg-main);
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--primary);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+    }
+
+    .time-slot-checkboxes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-top: 0.35rem;
+    }
+
+    .time-slot-check {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 0.45rem 0.65rem;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+
+    .time-slot-check:hover {
+      border-color: var(--primary-border);
+      background: var(--primary-light);
+    }
+
+    .time-slot-check input[type="checkbox"] {
+      cursor: pointer;
+      accent-color: var(--primary);
+    }
+
+    .bridge-inbound-badge {
+      display: none;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.775rem;
+      margin-bottom: 1rem;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .form-validation-alert {
+      display: none;
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      margin-bottom: 1rem;
+      line-height: 1.4;
+    }
+
+    .form-actions-row {
+      display: flex;
+      gap: 0.6rem;
+      margin-top: 1.25rem;
+    }
+
+    .btn-submit-dose {
+      flex: 1;
+      background: var(--primary);
+      color: white;
+      border: 1px solid var(--primary);
+      padding: 0.65rem 1rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: background 0.15s ease;
+    }
+
+    .btn-submit-dose:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-reset-form {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      color: var(--text-body);
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .btn-reset-form:hover {
+      background: #e2e8f0;
+    }
+
+    /* Live Schedule Display Panel */
+    .dosage-display-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .dosage-display-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      padding-bottom: 1rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .dosage-display-header h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-title);
+    }
+
+    .schedule-control-btns {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .preset-demo-btn {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      font-size: 0.775rem;
+      font-weight: 600;
+      padding: 0.35rem 0.7rem;
+      border-radius: var(--radius-sm);
+      color: var(--text-body);
+    }
+    .preset-demo-btn:hover {
+      background: var(--primary-light);
+      border-color: var(--primary-border);
+      color: var(--primary);
+    }
+
+    .btn-print-schedule {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      font-size: 0.775rem;
+      font-weight: 600;
+      padding: 0.35rem 0.7rem;
+      border-radius: var(--radius-sm);
+      color: var(--text-body);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .btn-print-schedule:hover {
+      background: #f1f5f9;
+      color: var(--text-title);
+    }
+
+    /* 4 Time Slot Quad Columns */
+    .dosage-quad-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .time-slot-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .slot-header {
+      padding: 0.75rem 0.85rem;
+      background: var(--bg-main);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .slot-icon {
+      font-size: 1.15rem;
+      line-height: 1;
+    }
+
+    .slot-title-group h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-title);
+      line-height: 1.1;
+    }
+
+    .slot-title-group .trans-label {
+      font-size: 0.8rem;
+      color: var(--primary);
+      font-weight: 600;
+      font-family: var(--font-rtl);
+    }
+
+    .slot-items-container {
+      padding: 0.75rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      min-height: 120px;
+    }
+
+    .slot-empty-notice {
+      margin: auto;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      padding: 1.5rem 0.5rem;
+      border: 1px dashed var(--border-color);
+      border-radius: 4px;
+      width: 100%;
+    }
+
+    .dose-item-card {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 0.75rem;
+      position: relative;
+      transition: all 0.15s ease;
+    }
+
+    .dose-item-card:hover {
+      border-color: var(--primary-border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .dose-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.25rem;
+    }
+
+    .dose-med-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-title);
+    }
+
+    .dose-qty-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      background: var(--primary-light);
+      color: var(--primary-hover);
+      border: 1px solid var(--primary-border);
+      padding: 0.1rem 0.4rem;
+      border-radius: 999px;
+    }
+
+    .dose-meal-cue {
+      font-size: 0.75rem;
+      color: var(--text-body);
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      margin-top: 0.2rem;
+    }
+
+    .dose-confirmed-raw {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-top: 0.35rem;
+      border-top: 1px dashed var(--border-subtle);
+      padding-top: 0.3rem;
+    }
+
+    .dose-item-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.4rem;
+      margin-top: 0.45rem;
+    }
+
+    .action-mini-btn {
+      background: transparent;
+      border: none;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.15rem 0.35rem;
+      border-radius: 3px;
+    }
+    .action-mini-btn:hover {
+      color: var(--primary);
+      background: var(--bg-card);
+    }
+    .action-mini-btn.btn-del:hover {
+      color: #b91c1c;
+    }
+
+    .slot-audio-btn {
+      margin-top: auto;
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-main);
+      border-left: none;
+      border-right: none;
+      border-bottom: none;
+      padding: 0.45rem;
+      font-size: 0.725rem;
+      font-weight: 600;
+      color: var(--text-body);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+      transition: all 0.15s ease;
+    }
+    .slot-audio-btn:hover {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    /* As Needed (PRN) Section */
+    .prn-section {
+      margin-top: 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      background: var(--bg-main);
+      padding: 0.85rem 1rem;
+    }
+
+    .prn-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-title);
+      margin-bottom: 0.5rem;
+    }
+
+    .prn-items-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+    }
+
+    /* Audio Status Notification Banner */
+    .speech-status-banner {
+      display: none;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+      padding: 0.6rem 0.9rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      margin-top: 1rem;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* ==========================================================================
+       8. GENERIC MEDICINE MATCHER VIEW
+       ========================================================================== */
+    .matcher-search-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search-input-wrap {
+      position: relative;
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: var(--text-title);
+      background: var(--bg-main);
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+    }
+
+    .search-icon-inside {
+      position: absolute;
+      left: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .filter-pills {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.85rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-chip {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      color: var(--text-body);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .filter-chip.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .comparison-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+    }
+
+    .med-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.875rem;
+    }
+
+    .med-table th {
+      background: var(--bg-main);
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.725rem;
+      letter-spacing: 0.04em;
+      padding: 0.85rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .med-table td {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-body);
+      vertical-align: middle;
+    }
+
+    .med-table tr:last-child td { border-bottom: none; }
+    .med-table tr:hover td { background: #fafaf9; }
+
+    .brand-cell strong {
+      display: block;
+      color: var(--text-title);
+      font-size: 0.95rem;
+    }
+
+    .brand-cell small {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    .salt-pill {
+      font-weight: 600;
+      color: #0369a1;
+      background: #e0f2fe;
+      border: 1px solid #bae6fd;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      font-size: 0.775rem;
+      display: inline-block;
+    }
+
+    .price-badge {
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+
+    .price-badge.saving {
+      color: #15803d;
+      background: #dcfce7;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      border: 1px solid #bbf7d0;
+    }
+
+    .price-badge.standard { color: var(--text-muted); }
+
+    .notice-card {
+      margin-top: 1.5rem;
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    /* ==========================================================================
+       9. FOOTER
+       ========================================================================== */
+    footer.app-footer {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border-color);
+      padding: 2rem 1.25rem;
+      color: var(--text-muted);
+      font-size: 0.825rem;
+      margin-top: auto;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      color: var(--text-title);
+    }
+
+    .footer-disclaimer-box {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+      line-height: 1.5;
+    }
+
+    /* ==========================================================================
+       10. RESPONSIVE DESIGN & PRINT OPTIMIZATION
+       ========================================================================== */
+    @media (max-width: 960px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .steps-row { grid-template-columns: 1fr; }
+      .scanner-layout { grid-template-columns: 1fr; }
+      .dosage-workspace { grid-template-columns: 1fr; }
+      .dosage-quad-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 600px) {
+      .dosage-quad-grid { grid-template-columns: 1fr; }
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: var(--bg-card);
+        border-bottom: 1px solid var(--border-color);
+        padding: 0.75rem 1.25rem;
+        box-shadow: var(--shadow-md);
+      }
+      .nav-links.open { display: flex; }
+      .mobile-menu-btn { display: block; }
+      .nav-container { position: relative; }
+    }
+
+    /* Print Optimization for Printable Medication Schedule */
+    @media print {
+      .top-disclaimer, header.app-header, .dosage-toolbar, .dosage-form-card,
+      .schedule-control-btns, .slot-audio-btn, .dose-item-actions,
+      footer.app-footer, .notice-card {
+        display: none !important;
+      }
+      body { background: white; color: black; }
+      .dosage-workspace { display: block; }
+      .dosage-display-card { border: none; box-shadow: none; padding: 0; }
+      .dosage-quad-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+      .time-slot-card { border: 1px solid #999; page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CLINICAL DISCLAIMER BAR -->
+  <aside class="top-disclaimer" role="alert" aria-label="Informational Medical Prototype Disclaimer">
+    <svg viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+    </svg>
+    <span><strong>Prototype Notice:</strong> Nuskha AI organizes confirmed prescription instructions for visualization. It does not replace a doctor or pharmacist.</span>
+  </aside>
+
+  <!-- APP HEADER & NAVIGATION -->
+  <header class="app-header">
+    <div class="nav-container">
+      <div class="brand-group" onclick="navigateTo('dashboard')" title="Return to Dashboard">
+        <div class="brand-logo" aria-hidden="true">
+          <!-- Medical Shield + AI sparkle icon -->
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12h6"/>
+            <path d="M12 9v6"/>
+          </svg>
+        </div>
+        <div class="brand-title">
+          <h1>Nuskha AI <span class="badge">Stage 3 Active</span></h1>
+          <p>Medication Assistance Platform</p>
+        </div>
+      </div>
+
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation menu" onclick="toggleMobileMenu()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+
+      <nav>
+        <ul class="nav-links" id="navLinks" role="tablist">
+          <li>
+            <button class="nav-item active" id="nav-dashboard" role="tab" aria-selected="true" onclick="navigateTo('dashboard')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+              Dashboard
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" id="nav-scanner" role="tab" aria-selected="false" onclick="navigateTo('scanner')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              Prescription Scanner
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" id="nav-dosage" role="tab" aria-selected="false" onclick="navigateTo('dosage')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              Dosage Assistant
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" id="nav-generic" role="tab" aria-selected="false" onclick="navigateTo('generic')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+              Generic Matcher
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN BODY CONTENT (4 SWITCHABLE VIEWS) -->
+  <main class="main-content" id="mainContent">
+
+    <!-- ========================================================================
+         VIEW 1: DASHBOARD
+         ======================================================================== -->
+    <section class="view-section active" id="view-dashboard" role="tabpanel" aria-labelledby="nav-dashboard">
+      <div class="hero-banner">
+        <div class="hero-content">
+          <span class="hero-tag">Stage 3 Visual Dosage Assistant Enabled</span>
+          <h2>Safer Medication, Accessible in Every Language</h2>
+          <p>
+            Nuskha AI assists patients and caregivers by organizing confirmed prescriptions into pictorial schedules with accessible Urdu (اردو) and Sindhi (سنڌي) voice guidance, safety guardrails, and generic matching.
+          </p>
+          <div class="hero-badges">
+            <span class="hero-pill">✓ Interactive Visual Timelines</span>
+            <span class="hero-pill">✓ Urdu & Sindhi Audio Voice</span>
+            <span class="hero-pill">✓ Zero Prescription Fabrication</span>
+            <span class="hero-pill">✓ Ambiguity Guardrail Engine</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature Cards Grid -->
+      <div class="cards-grid">
+        <!-- Card 1 -->
+        <article class="feature-card">
+          <div class="card-icon-wrap icon-teal" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+          </div>
+          <h3>Prescription Scanner</h3>
+          <p>Digitize prescription items, verify strength and dosage frequencies, and seamlessly bridge confirmed items to the Dosage Assistant for review.</p>
+          <div class="card-tags">
+            <span class="tag-chip">OCR Upload Shell</span>
+            <span class="tag-chip">Stage 2/3 Bridge</span>
+          </div>
+          <button class="card-btn" onclick="navigateTo('scanner')">
+            Open Scanner Shell &rarr;
+          </button>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="feature-card">
+          <div class="card-icon-wrap icon-blue" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          </div>
+          <h3>Visual Dosage Assistant</h3>
+          <p>Create visual schedules from confirmed doctor instructions with pictorial meal cues, Urdu and Sindhi translations, and audio voice readouts.</p>
+          <div class="card-tags">
+            <span class="tag-chip">Stage 3 Functional</span>
+            <span class="tag-chip">Urdu & Sindhi Speech</span>
+          </div>
+          <button class="card-btn" onclick="navigateTo('dosage')">
+            Open Dosage Assistant &rarr;
+          </button>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="feature-card">
+          <div class="card-icon-wrap icon-emerald" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+          </div>
+          <h3>Generic Matcher</h3>
+          <p>Match prescribed branded medicines with bioequivalent active salts, compare dosage strengths, and discover cost-effective alternatives.</p>
+          <div class="card-tags">
+            <span class="tag-chip">Salt Matching</span>
+            <span class="tag-chip">Price Transparency</span>
+          </div>
+          <button class="card-btn" onclick="navigateTo('generic')">
+            Open Generic Matcher &rarr;
+          </button>
+        </article>
+      </div>
+
+      <!-- How Nuskha AI Works -->
+      <div class="info-panel">
+        <h3>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          Nuskha AI Architectural Workflow
+        </h3>
+        <div class="steps-row">
+          <div class="step-item">
+            <span class="step-number">1</span>
+            <div class="step-text">
+              <h4>Scan & Ingest</h4>
+              <p>Secure input shell receiving prescription images or manual inputs without storing personal medical data.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <span class="step-number">2</span>
+            <div class="step-text">
+              <h4>Review & Schedule</h4>
+              <p>User verifies instructions, flags ambiguity, and visualizes morning, noon, evening, and bedtime cues.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <span class="step-number">3</span>
+            <div class="step-text">
+              <h4>Multilingual Voice Guidance</h4>
+              <p>Accessible speech readout in Urdu (اردو) and Sindhi (سنڌي) to assist patients of all literacy levels.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         VIEW 2: PRESCRIPTION SCANNER (WITH BRIDGE TO DOSAGE ASSISTANT)
+         ======================================================================== -->
+    <section class="view-section" id="view-scanner" role="tabpanel" aria-labelledby="nav-scanner">
+      <div class="section-header">
+        <span class="breadcrumb" onclick="navigateTo('dashboard')">&larr; Return to Dashboard</span>
+        <h2>Prescription Scanner & Medication Safety Checks</h2>
+        <p>Digitize and extract prescribed medications, verify dosage strength, and bridge confirmed items directly into the Visual Dosage Assistant for schedule review.</p>
+      </div>
+
+      <div class="scanner-layout">
+        <!-- Input & Upload Shell -->
+        <div class="upload-box">
+          <div class="dropzone" id="dropzone" onclick="triggerFileInput()">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <h4>Upload Prescription Document</h4>
+            <p>Drag and drop image (JPG, PNG) or document file here</p>
+            <span class="browse-btn">Select Local File</span>
+            <input type="file" id="prescriptionFileInput" style="display: none;" accept="image/*,.pdf" onchange="handleFileSelect(event)">
+          </div>
+
+          <div class="scanner-presets">
+            <h5>Demo Presets (Test Extraction & Bridge to Stage 3)</h5>
+            <div class="preset-chips">
+              <button class="preset-btn" id="preset-1" onclick="loadSamplePrescription(1)">
+                <span><strong>Sample 1:</strong> Dual Therapy (Antibiotic + Analgesic)</span>
+                <span>Load &rarr;</span>
+              </button>
+              <button class="preset-btn" id="preset-2" onclick="loadSamplePrescription(2)">
+                <span><strong>Sample 2:</strong> Metabolic Care (Metformin + Statin)</span>
+                <span>Load &rarr;</span>
+              </button>
+              <button class="preset-btn" id="preset-clear" onclick="clearPrescription()">
+                <span>Clear / Empty State</span>
+                <span>Reset</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="safety-notice-box" style="margin-top: 1.25rem;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <div>
+              <strong>Privacy Protection:</strong> Do not upload sensitive personally identifiable medical data. Prototype operations are local to your browser session.
+            </div>
+          </div>
+        </div>
+
+        <!-- Output / Extraction Shell -->
+        <div class="scanner-output">
+          <div class="scanner-output-header">
+            <h3 style="font-size: 1.05rem; font-weight: 700;">Extraction & Safety Shell</h3>
+            <span class="status-badge idle" id="scannerStatusBadge">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: currentColor;"></span>
+              Awaiting Input
+            </span>
+          </div>
+
+          <!-- Empty State (Default) -->
+          <div class="empty-state" id="scannerEmptyState">
+            <div class="empty-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="12" y1="18" x2="12" y2="12"></line>
+                <line x1="9" y1="15" x2="15" y2="15"></line>
+              </svg>
+            </div>
+            <h4>No Prescription Loaded</h4>
+            <p>Select a local file or click one of the demo presets on the left to preview structured extraction cards.</p>
+          </div>
+
+          <!-- Extracted Data Container (Populated via JS) -->
+          <div class="extracted-data" id="extractedDataView">
+            <div id="medListContainer"></div>
+
+            <div class="safety-notice-box" id="safetyAlertBox" style="display: none;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+              <div>
+                <strong>Safety Guardrail Check:</strong>
+                <p id="safetyAlertText" style="margin-top: 0.2rem;"></p>
+              </div>
+            </div>
+
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem; text-align: center;">
+              * Note: You can transfer any extracted medication into the Stage 3 Dosage Assistant for schedule review.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         VIEW 3: VISUAL DOSAGE ASSISTANT (STAGE 3 FUNCTIONAL MODULE)
+         ======================================================================== -->
+    <section class="view-section" id="view-dosage" role="tabpanel" aria-labelledby="nav-dosage">
+      <div class="section-header">
+        <span class="breadcrumb" onclick="navigateTo('dashboard')">&larr; Return to Dashboard</span>
+        <h2 id="dosage-page-title">Visual Dosage Assistant (بصری شیڈول)</h2>
+        <p id="dosage-page-subtitle">Convert verified doctor prescription instructions into clear, pictorial timelines with multilingual Urdu and Sindhi voice guidance.</p>
+      </div>
+
+      <!-- Language & Speech Master Toolbar -->
+      <div class="dosage-toolbar">
+        <div class="lang-selector-group">
+          <span class="lang-selector-label" id="lbl-lang-select">Language / زبان:</span>
+          <div class="lang-btn-group" role="group" aria-label="Language selection">
+            <button class="lang-btn active" id="lang-en" onclick="setLanguage('en')">English</button>
+            <button class="lang-btn" id="lang-ur" onclick="setLanguage('ur')">اردو (Urdu)</button>
+            <button class="lang-btn" id="lang-sd" onclick="setLanguage('sd')">سنڌي (Sindhi)</button>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+          <!-- Master Voice Readout Button -->
+          <button class="audio-global-btn" id="masterSpeechBtn" onclick="toggleFullScheduleSpeech()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            </svg>
+            <span id="masterSpeechBtnText">Listen Schedule Readout (آواز سنیں)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Speech Status Notification Banner -->
+      <div class="speech-status-banner" id="speechStatusBanner">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <span id="speechStatusText">Voice synthesizer active...</span>
+      </div>
+
+      <!-- Main Interactive Dosage Workspace -->
+      <div class="dosage-workspace">
+
+        <!-- Column A: Instruction Entry & Review Form -->
+        <div class="dosage-form-card">
+          <h3 id="form-card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            <span id="form-title-text">Review & Add Medication</span>
+          </h3>
+          <p id="form-desc-text">Enter or verify exact instructions from the doctor's prescription. Ambiguous or incomplete instructions will be flagged for safety.</p>
+
+          <!-- Inbound Bridge Notice (when transferred from Scanner) -->
+          <div class="bridge-inbound-badge" id="bridgeInboundNotice">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+            <span><strong>Transferred from Scanner:</strong> Please verify the time slots below before generating the schedule.</span>
+          </div>
+
+          <!-- Validation Alert -->
+          <div class="form-validation-alert" id="formValidationAlert"></div>
+
+          <form id="dosageInputForm" onsubmit="handleDoseFormSubmit(event)">
+            <!-- Hidden field for edit mode tracking -->
+            <input type="hidden" id="editItemIndex" value="-1">
+
+            <!-- 1. Medicine Name -->
+            <div class="form-group">
+              <label for="medNameInput" id="lbl-med-name">Medicine Name * (دوا کا نام)</label>
+              <input type="text" id="medNameInput" class="form-input" placeholder="e.g. Amoxicillin, Panadol, Metformin..." required>
+            </div>
+
+            <!-- 2. Dosage & Form -->
+            <div class="form-group">
+              <label for="medStrengthInput" id="lbl-med-strength">Strength & Dose Form (طاقت اور شکل)</label>
+              <input type="text" id="medStrengthInput" class="form-input" placeholder="e.g. 500 mg Capsule, 1 Tablet, 5 ml...">
+            </div>
+
+            <!-- 3. Exact Prescribed Instruction text -->
+            <div class="form-group">
+              <label for="medInstructionInput" id="lbl-med-instruction">Exact Prescribed Instruction * (ڈاکٹر کی اصل ہدایت)</label>
+              <textarea id="medInstructionInput" class="form-textarea" rows="2" placeholder="e.g. 1 capsule after breakfast and 1 at bedtime for 5 days..." required></textarea>
+              <small style="font-size: 0.72rem; color: var(--text-muted);">
+                * Avoid ambiguous abbreviations. Unclear frequencies will be flagged for pharmacist verification.
+              </small>
+            </div>
+
+            <!-- 4. Confirmed Time Slots -->
+            <div class="form-group">
+              <label id="lbl-confirmed-timings">Confirmed Time of Day (تصدیق شدہ اوقات) *</label>
+              <div class="time-slot-checkboxes">
+                <label class="time-slot-check">
+                  <input type="checkbox" id="slotCheckMorning" value="morning">
+                  <span>☀️ Morning (صبح)</span>
+                </label>
+                <label class="time-slot-check">
+                  <input type="checkbox" id="slotCheckAfternoon" value="afternoon">
+                  <span>🌤️ Afternoon (دوپہر)</span>
+                </label>
+                <label class="time-slot-check">
+                  <input type="checkbox" id="slotCheckEvening" value="evening">
+                  <span>🌅 Evening (شام)</span>
+                </label>
+                <label class="time-slot-check">
+                  <input type="checkbox" id="slotCheckBedtime" value="bedtime">
+                  <span>🌙 Bedtime (رات)</span>
+                </label>
+                <label class="time-slot-check" style="grid-column: span 2;">
+                  <input type="checkbox" id="slotCheckPrn" value="prn">
+                  <span>💧 Only As Needed / PRN (صرف ضرورت پڑنے پر)</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- 5. Meal Instruction Relation -->
+            <div class="form-group">
+              <label for="mealRelationSelect" id="lbl-meal-timing">Meal Relation (کھانے کے ساتھ تعلق)</label>
+              <select id="mealRelationSelect" class="form-select">
+                <option value="after_food">🍽️ After Food (کھانے کے بعد / ماني کان پوءِ)</option>
+                <option value="before_food">🥛 Before Food (نہار منہ / ماني کان اڳ)</option>
+                <option value="with_food">🍲 With Food (کھانے کے ساتھ / ماني سان)</option>
+                <option value="prn_fever">💧 If Pain / Fever (درد یا بخار کی صورت میں)</option>
+                <option value="unspecified">📋 Not Specified (غیر متعین)</option>
+              </select>
+            </div>
+
+            <!-- 6. Quantity per dose -->
+            <div class="form-group">
+              <label for="doseQtyInput" id="lbl-dose-qty">Quantity Per Dose (ایک وقت کی مقدار)</label>
+              <input type="text" id="doseQtyInput" class="form-input" placeholder="e.g. 1 Capsule, 1 Tablet, 1 Spoon...">
+            </div>
+
+            <!-- Form Action Buttons -->
+            <div class="form-actions-row">
+              <button type="submit" class="btn-submit-dose" id="btnSubmitDose">
+                ✓ Confirm & Add to Schedule
+              </button>
+              <button type="button" class="btn-reset-form" onclick="resetDoseForm()" id="btnResetForm">
+                Clear
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Column B: Confirmed Visual Schedule Display -->
+        <div class="dosage-display-card">
+          <div class="dosage-display-header">
+            <div>
+              <h3 id="schedule-board-title">Confirmed Visual Schedule (تصدیق شدہ ٹائم لائن)</h3>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;" id="schedule-board-subtitle">
+                Pictorial medication calendar generated strictly from confirmed instructions.
+              </p>
+            </div>
+
+            <div class="schedule-control-btns">
+              <button class="preset-demo-btn" onclick="loadSchedulePreset(1)" title="Load sample verified schedule">Demo 1: Dual Therapy</button>
+              <button class="preset-demo-btn" onclick="loadSchedulePreset(2)" title="Load chronic care sample">Demo 2: Chronic Care</button>
+              <button class="preset-demo-btn" onclick="clearAllScheduleItems()" style="color: #b91c1c;">Reset All</button>
+              <button class="btn-print-schedule" onclick="window.print()" title="Print visual schedule chart">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                  <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                Print / PDF
+              </button>
+            </div>
+          </div>
+
+          <!-- 4-Slot Quad Grid (Morning, Afternoon, Evening, Bedtime) -->
+          <div class="dosage-quad-grid">
+
+            <!-- Slot 1: Morning -->
+            <div class="time-slot-card" id="slot-card-morning">
+              <div class="slot-header">
+                <span class="slot-icon" aria-hidden="true">☀️</span>
+                <div class="slot-title-group">
+                  <h4 id="slot-h-morning">Morning</h4>
+                  <div class="trans-label" id="slot-t-morning">صبح</div>
+                </div>
+              </div>
+              <div class="slot-items-container" id="container-morning">
+                <!-- Populated dynamically via JavaScript -->
+              </div>
+              <button class="slot-audio-btn" onclick="speakSlot('morning')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+                <span id="btn-audio-morning">Listen Morning</span>
+              </button>
+            </div>
+
+            <!-- Slot 2: Afternoon -->
+            <div class="time-slot-card" id="slot-card-afternoon">
+              <div class="slot-header">
+                <span class="slot-icon" aria-hidden="true">🌤️</span>
+                <div class="slot-title-group">
+                  <h4 id="slot-h-afternoon">Afternoon</h4>
+                  <div class="trans-label" id="slot-t-afternoon">دوپہر</div>
+                </div>
+              </div>
+              <div class="slot-items-container" id="container-afternoon">
+                <!-- Populated dynamically via JavaScript -->
+              </div>
+              <button class="slot-audio-btn" onclick="speakSlot('afternoon')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+                <span id="btn-audio-afternoon">Listen Afternoon</span>
+              </button>
+            </div>
+
+            <!-- Slot 3: Evening -->
+            <div class="time-slot-card" id="slot-card-evening">
+              <div class="slot-header">
+                <span class="slot-icon" aria-hidden="true">🌅</span>
+                <div class="slot-title-group">
+                  <h4 id="slot-h-evening">Evening</h4>
+                  <div class="trans-label" id="slot-t-evening">شام</div>
+                </div>
+              </div>
+              <div class="slot-items-container" id="container-evening">
+                <!-- Populated dynamically via JavaScript -->
+              </div>
+              <button class="slot-audio-btn" onclick="speakSlot('evening')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+                <span id="btn-audio-evening">Listen Evening</span>
+              </button>
+            </div>
+
+            <!-- Slot 4: Bedtime -->
+            <div class="time-slot-card" id="slot-card-bedtime">
+              <div class="slot-header">
+                <span class="slot-icon" aria-hidden="true">🌙</span>
+                <div class="slot-title-group">
+                  <h4 id="slot-h-bedtime">Bedtime</h4>
+                  <div class="trans-label" id="slot-t-bedtime">رات</div>
+                </div>
+              </div>
+              <div class="slot-items-container" id="container-bedtime">
+                <!-- Populated dynamically via JavaScript -->
+              </div>
+              <button class="slot-audio-btn" onclick="speakSlot('bedtime')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+                <span id="btn-audio-bedtime">Listen Bedtime</span>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Section: As Needed (PRN) Items -->
+          <div class="prn-section" id="prnSection" style="display: none;">
+            <div class="prn-header">
+              <span style="font-size: 1.1rem;">💧</span>
+              <span id="prn-header-title">As Needed / PRN Medications (صرف ضرورت کے وقت)</span>
+            </div>
+            <div class="prn-items-list" id="container-prn"></div>
+          </div>
+
+          <!-- Clinical Safety Notice Banner -->
+          <div class="notice-card" style="margin-top: 1.25rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--primary); flex-shrink: 0;">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span id="safety-guidance-text">
+              <strong>Medical Guidance:</strong> This schedule organizes confirmed prescription instructions. Always verify against the physical prescription slip. If instructions are unclear, consult a licensed doctor or pharmacist.
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         VIEW 4: GENERIC MEDICINE MATCHER
+         ======================================================================== -->
+    <section class="view-section" id="view-generic" role="tabpanel" aria-labelledby="nav-generic">
+      <div class="section-header">
+        <span class="breadcrumb" onclick="navigateTo('dashboard')">&larr; Return to Dashboard</span>
+        <h2>Generic Medicine Matcher</h2>
+        <p>Compare branded medicines against bioequivalent active pharmaceutical ingredients (salts), dosage forms, and reference price indicators.</p>
+      </div>
+
+      <!-- Search & Filter Controls -->
+      <div class="matcher-search-bar">
+        <div class="search-input-wrap">
+          <span class="search-icon-inside" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </span>
+          <input type="text" id="genericSearchInput" class="search-input" placeholder="Search by Brand Name or Active Salt (e.g. Panadol, Augmentin, Omeprazole)..." oninput="filterGenericTable()">
+        </div>
+
+        <div class="filter-pills">
+          <span style="font-size: 0.75rem; color: var(--text-muted); align-self: center; font-weight: 600;">Form:</span>
+          <button class="filter-chip active" onclick="setFormFilter('all', this)">All Forms</button>
+          <button class="filter-chip" onclick="setFormFilter('tablet', this)">Tablet</button>
+          <button class="filter-chip" onclick="setFormFilter('capsule', this)">Capsule</button>
+          <button class="filter-chip" onclick="setFormFilter('syrup', this)">Syrup</button>
+        </div>
+      </div>
+
+      <!-- Comparison Table -->
+      <div class="comparison-container">
+        <div class="table-responsive">
+          <table class="med-table" id="genericTable">
+            <thead>
+              <tr>
+                <th>Brand Name</th>
+                <th>Active Ingredient (Salt)</th>
+                <th>Strength</th>
+                <th>Dosage Form</th>
+                <th>Bioequivalent Generic Option</th>
+                <th>Sample Price Guide</th>
+              </tr>
+            </thead>
+            <tbody id="genericTableBody">
+              <!-- Dynamically populated via JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty search state -->
+        <div class="empty-state" id="genericEmptyState" style="display: none;">
+          <div class="empty-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+          <h4>No Matching Medicines Found</h4>
+          <p>Try searching for common active ingredients like Paracetamol, Amoxicillin, or Omeprazole.</p>
+        </div>
+      </div>
+
+      <div class="notice-card">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--primary);">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <span><strong>Pharmacist Advisory:</strong> Prices and equivalencies shown are sample benchmarks for UI evaluation. Always consult a licensed pharmacist before substituting any prescribed medication.</span>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- APP FOOTER -->
+  <footer class="app-footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <span>Nuskha AI &middot; Healthcare Hackathon Project</span>
+        </div>
+        <div>
+          <span>Stage 3: Functional Visual Dosage Assistant with Urdu & Sindhi Accessibility</span>
+        </div>
+      </div>
+
+      <div class="footer-disclaimer-box">
+        <strong>Informational Prototype Disclaimer:</strong> Nuskha AI is developed strictly as a technology concept and research demonstration. It does not provide clinical diagnoses, medical advice, prescription writing, or pharmacy dispensations. Real medication decisions must always be directed by a licensed medical practitioner or registered pharmacist.
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       11. JAVASCRIPT: APPLICATION LOGIC & STAGE 3 DOSAGE ASSISTANT SUITE
+       ========================================================================== */
+  -->
+  <script>
+    /**
+     * Nuskha AI - Stage 3 Implementation
+     * Comprehensive Visual Dosage Assistant with Multilingual Urdu & Sindhi Voice Guidance
+     */
+
+    // --- State Storage for Confirmed Schedule Medications ---
+    let confirmedMedications = [];
+    let currentLanguage = 'en';
+    let isSpeaking = false;
+
+    // --- Multilingual Translations Dictionary ---
+    const I18N = {
+      en: {
+        pageTitle: "Visual Dosage Assistant",
+        pageSubtitle: "Convert verified doctor prescription instructions into clear, pictorial timelines with multilingual Urdu and Sindhi voice guidance.",
+        langSelect: "Language / زبان:",
+        formCardTitle: "Review & Add Medication",
+        formDesc: "Enter or verify exact instructions from the doctor's prescription. Ambiguous or incomplete instructions will be flagged for safety.",
+        lblMedName: "Medicine Name *",
+        lblMedStrength: "Strength & Dose Form",
+        lblInstruction: "Exact Prescribed Instruction *",
+        lblTimings: "Confirmed Time of Day *",
+        lblMealTiming: "Meal Relation",
+        lblDoseQty: "Quantity Per Dose",
+        btnSubmit: "✓ Confirm & Add to Schedule",
+        btnUpdate: "✓ Update Medication Schedule",
+        btnClear: "Clear",
+        scheduleTitle: "Confirmed Visual Schedule",
+        scheduleSubtitle: "Pictorial medication calendar generated strictly from confirmed instructions.",
+        prnTitle: "As Needed / PRN Medications (Only When Necessary)",
+        slotMorning: "Morning",
+        slotMorningTrans: "Morning",
+        slotAfternoon: "Afternoon",
+        slotAfternoonTrans: "Afternoon",
+        slotEvening: "Evening",
+        slotEveningTrans: "Evening",
+        slotBedtime: "Bedtime",
+        slotBedtimeTrans: "Bedtime",
+        audioBtnSlot: "Listen",
+        audioBtnMaster: "Listen Schedule Readout",
+        audioBtnStop: "Stop Voice",
+        emptySlot: "No medication scheduled for this time slot.",
+        meals: {
+          after_food: "🍽️ After Food",
+          before_food: "🥛 Before Food",
+          with_food: "🍲 With Food",
+          prn_fever: "💧 If Pain / Fever",
+          unspecified: "📋 As Prescribed"
+        },
+        safetyGuidance: "Medical Guidance: This schedule organizes confirmed prescription instructions. Always verify against the physical prescription slip. If instructions are unclear, consult a licensed doctor or pharmacist.",
+        speechNoticeActive: "Reading confirmed schedule aloud...",
+        speechNoticeVoiceMissing: "Speech voice for selected regional language is not installed in this browser/OS. Using available regional synthesizer fallback.",
+        speechNoticeEmpty: "No confirmed schedule items to read aloud. Please add or load a verified schedule."
+      },
+      ur: {
+        pageTitle: "بصری خوراک کا معاون (Visual Dosage Assistant)",
+        pageSubtitle: "ڈاکٹر کے تصدیق شدہ نسخے کی ہدایات کو آسان بصری ٹائم لائن اور اردو آواز میں تبدیل کریں۔",
+        langSelect: "زبان منتخب کریں:",
+        formCardTitle: "دوا کی تفصیلات اور تصدیق",
+        formDesc: "ڈاکٹر کے نسخے کی اصل ہدایات درج کریں۔ غیر واضح یا ادھوری معلومات کی صورت میں نظام الرٹ فراہم کرے گا۔",
+        lblMedName: "دوا کا نام * (Medicine Name)",
+        lblMedStrength: "طاقت اور شکل (Strength/Form)",
+        lblInstruction: "ڈاکٹر کی اصل ہدایت * (Exact Instruction)",
+        lblTimings: "تصدیق شدہ اوقات * (Confirmed Timings)",
+        lblMealTiming: "کھانے کے ساتھ تعلق (Meal Timing)",
+        lblDoseQty: "ایک وقت کی مقدار (Quantity)",
+        btnSubmit: "✓ تصدیق کر کے شیڈول میں شامل کریں",
+        btnUpdate: "✓ ترمیم شدہ شیڈول محفوظ کریں",
+        btnClear: "صاف کریں",
+        scheduleTitle: "تصدیق شدہ بصری شیڈول (Visual Schedule)",
+        scheduleSubtitle: "یہ شیڈول مریض کی تصدیق شدہ ہدایات کے مطابق تیار کیا گیا ہے۔",
+        prnTitle: "صرف ضرورت کے وقت استعمال ہونے والی ادویات (PRN)",
+        slotMorning: "صبح",
+        slotMorningTrans: "Morning (صبح کا وقت)",
+        slotAfternoon: "دوپہر",
+        slotAfternoonTrans: "Afternoon (دوپہر کا وقت)",
+        slotEvening: "شام",
+        slotEveningTrans: "Evening (شام کا وقت)",
+        slotBedtime: "رات (سوتے وقت)",
+        slotBedtimeTrans: "Bedtime (رات کو سونے سے پہلے)",
+        audioBtnSlot: "آواز سنیں 🔊",
+        audioBtnMaster: "پورا شیڈول سنیں 🔊",
+        audioBtnStop: "آواز بند کریں 🛑",
+        emptySlot: "اس وقت کے لیے کوئی دوا شیڈول نہیں ہے۔",
+        meals: {
+          after_food: "🍽️ کھانے کے بعد",
+          before_food: "🥛 کھانے سے پہلے (نہار منہ)",
+          with_food: "🍲 کھانے کے ساتھ",
+          prn_fever: "💧 درد یا بخار کی صورت میں",
+          unspecified: "📋 ڈاکٹر کی ہدایت کے مطابق"
+        },
+        safetyGuidance: "طبی رہنمائی: یہ شیڈول صرف تصدیق شدہ ہدایات کو منظم کرتا ہے۔ اگر کوئی بات واضح نہ ہو تو فوری طور پر ڈاکٹر یا فارماسسٹ سے رجوع کریں۔",
+        speechNoticeActive: "اردو آواز میں شیڈول پڑھا جا رہا ہے...",
+        speechNoticeVoiceMissing: "براؤزر میں مخصوص اردو آواز دستیاب نہیں، متبادل صوتی انجن استعمال کیا جا رہا ہے۔",
+        speechNoticeEmpty: "شیڈول خالی ہے، پڑھنے کے لیے کوئی دوا موجود نہیں ہے۔"
+      },
+      sd: {
+        pageTitle: "بصري دوائن جو مددگار (Visual Dosage Assistant)",
+        pageSubtitle: "ڊاڪٽر جي تصديق ٿيل نسخي کي تصويري شيڊول ۽ سنڌي آواز ۾ ترتيب ڏيو.",
+        langSelect: "ٻولي چونڊيو:",
+        formCardTitle: "دوا جا تفصيل ۽ تصديق",
+        formDesc: "نسخي ۾ ڏنل اصلي هدايتون داخل ڪريو. اڻ چٽي هدايت هجڻ جي صورت ۾ خبردار ڪيو ويندو.",
+        lblMedName: "دوا جو نالو * (Medicine Name)",
+        lblMedStrength: "طاقت ۽ شڪل (Strength/Form)",
+        lblInstruction: "ڊاڪٽر جي اصل هدايت * (Exact Instruction)",
+        lblTimings: "تصديق ٿيل وقت * (Confirmed Timings)",
+        lblMealTiming: "ماني سان واسطو (Meal Timing)",
+        lblDoseQty: "هڪ وقت جو اندازو (Quantity)",
+        btnSubmit: "✓ تصديق ڪري شيڊول ۾ رکو",
+        btnUpdate: "✓ درست ٿيل شيڊول محفوظ ڪريو",
+        btnClear: "صاف ڪريو",
+        scheduleTitle: "تصديق ٿيل بصري شيڊول (Visual Schedule)",
+        scheduleSubtitle: "هي شيڊول فقط مريض جي تصديق ڪيل نسخي مان ٺاهيو ويو آهي.",
+        prnTitle: "فقط ضرورت پوڻ تي وٺڻ واريون دوائون (PRN)",
+        slotMorning: "صبح",
+        slotMorningTrans: "Morning (صبح جو وقت)",
+        slotAfternoon: "منجھند",
+        slotAfternoonTrans: "Afternoon (منجھند جو وقت)",
+        slotEvening: "شام",
+        slotEveningTrans: "Evening (شام جو وقت)",
+        slotBedtime: "رات (سُمهڻ مهل)",
+        slotBedtimeTrans: "Bedtime (رات جو سُمهڻ وقت)",
+        audioBtnSlot: "سنڌي آواز ٻڌو 🔊",
+        audioBtnMaster: "سڄو شيڊول ٻڌو 🔊",
+        audioBtnStop: "آواز بند ڪريو 🛑",
+        emptySlot: "هن وقت لاءِ ڪا به دوا مقرر ناهي.",
+        meals: {
+          after_food: "🍽️ ماني کان پوءِ",
+          before_food: "🥛 ماني کان اڳ (خالي پيٽ)",
+          with_food: "🍲 ماني سان گڏ",
+          prn_fever: "💧 فقط تپ يا سور جي وقت",
+          unspecified: "📋 نسخي جي مطابق"
+        },
+        safetyGuidance: "طبي هدايت: هي شيڊول فقط ترتيب لاءِ آهي، ڪنهن به شڪ جي حالت ۾ ڊاڪٽر يا فارماسسٽ سان صلاح ڪريو.",
+        speechNoticeActive: "سنڌي هدايتن جو پڙهڻ جاري آهي...",
+        speechNoticeVoiceMissing: "سسٽم ۾ مخصوص سنڌي وائيس موجود ناهي، متبادل صوتی سسٽم استعمال ڪيو پيو وڃي.",
+        speechNoticeEmpty: "هن وقت شيڊول خالي آهي."
+      }
+    };
+
+    // --- Generic Catalog Data for Matcher ---
+    const GENERIC_CATALOG = [
+      { brand: "Panadol", salt: "Paracetamol", strength: "500 mg", form: "Tablet", genericBrand: "Paramol / GSK Generic", priceIndicator: "Reference Standard", saving: false },
+      { brand: "Calpol", salt: "Paracetamol", strength: "120 mg / 5ml", form: "Syrup", genericBrand: "Paracetamol Paediatric Elixir", priceIndicator: "Affordable Generic", saving: true },
+      { brand: "Augmentin", salt: "Amoxicillin + Clavulanic Acid", strength: "625 mg", form: "Tablet", genericBrand: "Amoxi-Clav Generic / Co-Amoxiclav", priceIndicator: "~35% Cost Difference", saving: true },
+      { brand: "Risek", salt: "Omeprazole", strength: "20 mg", form: "Capsule", genericBrand: "Omeprazole Generic Formulation", priceIndicator: "~40% Cost Difference", saving: true },
+      { brand: "Glucophage", salt: "Metformin Hydrochloride", strength: "500 mg", form: "Tablet", genericBrand: "Metformin Generic / Diabetmin", priceIndicator: "Affordable Generic", saving: true },
+      { brand: "Lipitor", salt: "Atorvastatin", strength: "20 mg", form: "Tablet", genericBrand: "Atorva / Generic Atorvastatin", priceIndicator: "~45% Cost Difference", saving: true },
+      { brand: "Novidat", salt: "Ciprofloxacin", strength: "500 mg", form: "Tablet", genericBrand: "Cipro Generic / Ciprox", priceIndicator: "~30% Cost Difference", saving: true }
+    ];
+
+    let currentActiveFormFilter = "all";
+
+    // =========================================================================
+    // 1. Navigation Switching (SPA)
+    // =========================================================================
+    function navigateTo(viewId) {
+      document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => {
+        n.classList.remove('active');
+        n.setAttribute('aria-selected', 'false');
+      });
+
+      const targetView = document.getElementById(`view-${viewId}`);
+      if (targetView) targetView.classList.add('active');
+
+      const activeNav = document.getElementById(`nav-${viewId}`);
+      if (activeNav) {
+        activeNav.classList.add('active');
+        activeNav.setAttribute('aria-selected', 'true');
+      }
+
+      const mobileNav = document.getElementById('navLinks');
+      if (mobileNav) mobileNav.classList.remove('open');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      history.replaceState(null, '', `#${viewId}`);
+
+      // Stop any speech when navigating away
+      if (isSpeaking) stopSpeech();
+    }
+
+    function toggleMobileMenu() {
+      document.getElementById('navLinks').classList.toggle('open');
+    }
+
+    // =========================================================================
+    // 2. Stage 3 Dosage Form: Submission & Ambiguity Guardrails
+    // =========================================================================
+
+    /**
+     * Inspects text for ambiguous prescription shorthand or missing information.
+     * Never guesses frequencies. Requires explicit confirmation.
+     */
+    function detectAmbiguities(text, selectedSlots) {
+      const lower = text.toLowerCase().trim();
+      const issues = [];
+
+      // Flag ambiguous abbreviations
+      if (/\b(as directed|as required|as needed|prn|sos|ud|ut dict|take as instructed)\b/i.test(lower) && selectedSlots.length === 0) {
+        issues.push("The instruction specifies 'as directed' or 'as needed' without indicating safe daily intervals or times.");
+      }
+
+      if (/\b(qds|tds|bd|od|tid|bid|qid)\b/i.test(lower) && selectedSlots.length === 0) {
+        issues.push("The instruction contains medical shorthand (e.g. TDS, BD, OD). Please explicitly check the confirmed time slots (Morning, Afternoon, Evening, Bedtime) to confirm the schedule.");
+      }
+
+      if (selectedSlots.length === 0) {
+        issues.push("No time-of-day slots were checked. Please select at least one time slot (Morning, Afternoon, Evening, Bedtime, or PRN).");
+      }
+
+      if (lower.length < 5) {
+        issues.push("Instruction text is too short or incomplete. Please type the full doctor instruction from the prescription.");
+      }
+
+      return issues;
+    }
+
+    function handleDoseFormSubmit(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('medNameInput').value.trim();
+      const strength = document.getElementById('medStrengthInput').value.trim();
+      const instruction = document.getElementById('medInstructionInput').value.trim();
+      const meal = document.getElementById('mealRelationSelect').value;
+      const qty = document.getElementById('doseQtyInput').value.trim() || "1 Dose";
+      const editIndex = parseInt(document.getElementById('editItemIndex').value, 10);
+
+      // Collect checked slots
+      const selectedSlots = [];
+      if (document.getElementById('slotCheckMorning').checked) selectedSlots.push('morning');
+      if (document.getElementById('slotCheckAfternoon').checked) selectedSlots.push('afternoon');
+      if (document.getElementById('slotCheckEvening').checked) selectedSlots.push('evening');
+      if (document.getElementById('slotCheckBedtime').checked) selectedSlots.push('bedtime');
+      if (document.getElementById('slotCheckPrn').checked) selectedSlots.push('prn');
+
+      // Ambiguity & Safety Validation Check
+      const alertBox = document.getElementById('formValidationAlert');
+      const ambiguityIssues = detectAmbiguities(instruction, selectedSlots);
+
+      if (ambiguityIssues.length > 0) {
+        alertBox.style.display = 'block';
+        alertBox.innerHTML = `
+          <strong>⚠️ Prescriber Instruction Ambiguity Detected:</strong><br>
+          ${ambiguityIssues.map(issue => `&bull; ${issue}`).join('<br>')}<br>
+          <span style="display:block;margin-top:0.4rem;font-weight:600;">
+            Please verify with your doctor or pharmacist. The application will not guess unconfirmed timings.
+          </span>
+        `;
+        return;
+      }
+
+      // Hide validation alert if passes
+      alertBox.style.display = 'none';
+
+      const medEntry = {
+        name,
+        strength,
+        instruction,
+        slots: selectedSlots,
+        meal,
+        qty,
+        verified: true
+      };
+
+      if (editIndex >= 0 && editIndex < confirmedMedications.length) {
+        // Update existing item
+        confirmedMedications[editIndex] = medEntry;
+      } else {
+        // Add new verified item
+        confirmedMedications.push(medEntry);
+      }
+
+      // Reset form and inbound banner
+      resetDoseForm();
+      document.getElementById('bridgeInboundNotice').style.display = 'none';
+
+      // Render updated visual schedule
+      renderVisualSchedule();
+    }
+
+    function resetDoseForm() {
+      document.getElementById('dosageInputForm').reset();
+      document.getElementById('editItemIndex').value = "-1";
+      document.getElementById('formValidationAlert').style.display = 'none';
+      document.getElementById('btnSubmitDose').textContent = I18N[currentLanguage].btnSubmit;
+      document.getElementById('form-title-text').textContent = I18N[currentLanguage].formCardTitle;
+    }
+
+    function editMedication(index) {
+      if (index < 0 || index >= confirmedMedications.length) return;
+      const item = confirmedMedications[index];
+
+      document.getElementById('medNameInput').value = item.name;
+      document.getElementById('medStrengthInput').value = item.strength || "";
+      document.getElementById('medInstructionInput').value = item.instruction;
+      document.getElementById('mealRelationSelect').value = item.meal || "unspecified";
+      document.getElementById('doseQtyInput').value = item.qty || "1 Dose";
+      document.getElementById('editItemIndex').value = index;
+
+      document.getElementById('slotCheckMorning').checked = item.slots.includes('morning');
+      document.getElementById('slotCheckAfternoon').checked = item.slots.includes('afternoon');
+      document.getElementById('slotCheckEvening').checked = item.slots.includes('evening');
+      document.getElementById('slotCheckBedtime').checked = item.slots.includes('bedtime');
+      document.getElementById('slotCheckPrn').checked = item.slots.includes('prn');
+
+      document.getElementById('btnSubmitDose').textContent = I18N[currentLanguage].btnUpdate;
+      document.getElementById('form-title-text').textContent = "Edit Medication Schedule (ترمیم)";
+
+      // Scroll to form on mobile
+      document.querySelector('.dosage-form-card').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function deleteMedication(index) {
+      if (confirm("Remove this medication from the visual schedule?")) {
+        confirmedMedications.splice(index, 1);
+        renderVisualSchedule();
+      }
+    }
+
+    function clearAllScheduleItems() {
+      if (confirmedMedications.length === 0) return;
+      if (confirm("Clear all items from the current schedule?")) {
+        confirmedMedications = [];
+        resetDoseForm();
+        renderVisualSchedule();
+      }
+    }
+
+    // =========================================================================
+    // 3. Stage 3 Visual Schedule Rendering Engine
+    // =========================================================================
+    function renderVisualSchedule() {
+      const slots = ['morning', 'afternoon', 'evening', 'bedtime'];
+      const langData = I18N[currentLanguage];
+
+      // Clear all slot containers
+      slots.forEach(slot => {
+        const container = document.getElementById(`container-${slot}`);
+        container.innerHTML = '';
+      });
+
+      const prnContainer = document.getElementById('container-prn');
+      prnContainer.innerHTML = '';
+      let prnCount = 0;
+
+      // Group medications into respective slots
+      slots.forEach(slotKey => {
+        const container = document.getElementById(`container-${slotKey}`);
+        const slotMeds = confirmedMedications
+          .map((med, origIndex) => ({ med, origIndex }))
+          .filter(entry => entry.med.slots.includes(slotKey));
+
+        if (slotMeds.length === 0) {
+          container.innerHTML = `<div class="slot-empty-notice">${langData.emptySlot}</div>`;
+        } else {
+          slotMeds.forEach(({ med, origIndex }) => {
+            const card = document.createElement('div');
+            card.className = 'dose-item-card';
+
+            const mealLabel = langData.meals[med.meal] || langData.meals.unspecified;
+
+            card.innerHTML = `
+              <div class="dose-item-top">
+                <span class="dose-med-name">${escapeHtml(med.name)}</span>
+                <span class="dose-qty-badge">${escapeHtml(med.qty)}</span>
+              </div>
+              ${med.strength ? `<div style="font-size:0.72rem;color:var(--text-muted);">${escapeHtml(med.strength)}</div>` : ''}
+              <div class="dose-meal-cue">
+                <span>${mealLabel}</span>
+              </div>
+              <div class="dose-confirmed-raw" title="Prescribed instruction">
+                &ldquo;${escapeHtml(med.instruction)}&rdquo;
+              </div>
+              <div class="dose-item-actions">
+                <button type="button" class="action-mini-btn" onclick="editMedication(${origIndex})">✏️ Edit</button>
+                <button type="button" class="action-mini-btn btn-del" onclick="deleteMedication(${origIndex})">🗑️ Delete</button>
+              </div>
+            `;
+            container.appendChild(card);
+          });
+        }
+      });
+
+      // Handle PRN items
+      const prnMeds = confirmedMedications
+        .map((med, origIndex) => ({ med, origIndex }))
+        .filter(entry => entry.med.slots.includes('prn'));
+
+      const prnSection = document.getElementById('prnSection');
+      if (prnMeds.length > 0) {
+        prnSection.style.display = 'block';
+        prnMeds.forEach(({ med, origIndex }) => {
+          const card = document.createElement('div');
+          card.className = 'dose-item-card';
+          card.style.minWidth = '220px';
+          card.innerHTML = `
+            <div class="dose-item-top">
+              <span class="dose-med-name">${escapeHtml(med.name)}</span>
+              <span class="dose-qty-badge">${escapeHtml(med.qty)}</span>
+            </div>
+            <div class="dose-meal-cue">
+              <span>💧 Only When Fever/Pain Occurs</span>
+            </div>
+            <div class="dose-confirmed-raw">&ldquo;${escapeHtml(med.instruction)}&rdquo;</div>
+            <div class="dose-item-actions">
+              <button type="button" class="action-mini-btn" onclick="editMedication(${origIndex})">✏️ Edit</button>
+              <button type="button" class="action-mini-btn btn-del" onclick="deleteMedication(${origIndex})">🗑️ Delete</button>
+            </div>
+          `;
+          prnContainer.appendChild(card);
+        });
+      } else {
+        prnSection.style.display = 'none';
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // =========================================================================
+    // 4. Multilingual Language Switching Engine (English, Urdu, Sindhi)
+    // =========================================================================
+    function setLanguage(langKey) {
+      currentLanguage = langKey;
+
+      ['en', 'ur', 'sd'].forEach(l => {
+        const btn = document.getElementById(`lang-${l}`);
+        if (btn) btn.classList.toggle('active', l === langKey);
+      });
+
+      const strings = I18N[langKey];
+      if (!strings) return;
+
+      // Update text in UI
+      document.getElementById('dosage-page-title').textContent = strings.pageTitle;
+      document.getElementById('dosage-page-subtitle').textContent = strings.pageSubtitle;
+      document.getElementById('lbl-lang-select').textContent = strings.langSelect;
+      document.getElementById('form-card-title').querySelector('span').textContent = strings.formCardTitle;
+      document.getElementById('form-desc-text').textContent = strings.formDesc;
+      document.getElementById('lbl-med-name').textContent = strings.lblMedName;
+      document.getElementById('lbl-med-strength').textContent = strings.lblMedStrength;
+      document.getElementById('lbl-med-instruction').textContent = strings.lblInstruction;
+      document.getElementById('lbl-confirmed-timings').textContent = strings.lblTimings;
+      document.getElementById('lbl-meal-timing').textContent = strings.lblMealTiming;
+      document.getElementById('lbl-dose-qty').textContent = strings.lblDoseQty;
+      document.getElementById('btnSubmitDose').textContent = strings.btnSubmit;
+      document.getElementById('btnResetForm').textContent = strings.btnClear;
+      document.getElementById('schedule-board-title').textContent = strings.scheduleTitle;
+      document.getElementById('schedule-board-subtitle').textContent = strings.scheduleSubtitle;
+      document.getElementById('prn-header-title').textContent = strings.prnTitle;
+      document.getElementById('safety-guidance-text').innerHTML = `<strong>Medical Guidance:</strong> ${strings.safetyGuidance}`;
+
+      // Slot headers
+      document.getElementById('slot-h-morning').textContent = strings.slotMorning;
+      document.getElementById('slot-t-morning').textContent = strings.slotMorningTrans;
+      document.getElementById('slot-h-afternoon').textContent = strings.slotAfternoon;
+      document.getElementById('slot-t-afternoon').textContent = strings.slotAfternoonTrans;
+      document.getElementById('slot-h-evening').textContent = strings.slotEvening;
+      document.getElementById('slot-t-evening').textContent = strings.slotEveningTrans;
+      document.getElementById('slot-h-bedtime').textContent = strings.slotBedtime;
+      document.getElementById('slot-t-bedtime').textContent = strings.slotBedtimeTrans;
+
+      // Audio buttons
+      ['morning', 'afternoon', 'evening', 'bedtime'].forEach(slot => {
+        document.getElementById(`btn-audio-${slot}`).textContent = `${strings.audioBtnSlot} ${strings['slot' + capitalize(slot)]}`;
+      });
+
+      document.getElementById('masterSpeechBtnText').textContent = isSpeaking ? strings.audioBtnStop : strings.audioBtnMaster;
+
+      // Re-render schedule with localized strings
+      renderVisualSchedule();
+    }
+
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    // =========================================================================
+    // 5. Accessible Text-To-Speech (TTS) Voice Engine
+    // =========================================================================
+    function toggleFullScheduleSpeech() {
+      if (isSpeaking) {
+        stopSpeech();
+        return;
+      }
+      speakFullSchedule();
+    }
+
+    function stopSpeech() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      isSpeaking = false;
+      const btn = document.getElementById('masterSpeechBtn');
+      btn.classList.remove('speaking');
+      document.getElementById('masterSpeechBtnText').textContent = I18N[currentLanguage].audioBtnMaster;
+      document.getElementById('speechStatusBanner').style.display = 'none';
+    }
+
+    function speakFullSchedule() {
+      if (!('speechSynthesis' in window)) {
+        alert("Speech synthesis is not supported by your browser. Please view visual schedule labels instead.");
+        return;
+      }
+
+      if (confirmedMedications.length === 0) {
+        showSpeechStatusBanner(I18N[currentLanguage].speechNoticeEmpty, false);
+        return;
+      }
+
+      // Build speech text from confirmed schedule
+      let speechText = "";
+      const lang = currentLanguage;
+
+      if (lang === 'ur') {
+        speechText = "آپ کا تصدیق شدہ ادویات کا شیڈول: ";
+        ['morning', 'afternoon', 'evening', 'bedtime'].forEach(slot => {
+          const meds = confirmedMedications.filter(m => m.slots.includes(slot));
+          if (meds.length > 0) {
+            speechText += ` ${I18N.ur['slot' + capitalize(slot)]} کے وقت: ` +
+              meds.map(m => `${m.name}، ${m.qty}، ${I18N.ur.meals[m.meal] || ''}`).join('، اور ');
+            speechText += ". ";
+          }
+        });
+        speechText += "براہ کرم ڈاکٹر کی دی گئی ہدایات کی تصدیق کریں۔";
+      } else if (lang === 'sd') {
+        speechText = "توهان جو تصديق ٿيل دوائن جو شيڊول: ";
+        ['morning', 'afternoon', 'evening', 'bedtime'].forEach(slot => {
+          const meds = confirmedMedications.filter(m => m.slots.includes(slot));
+          if (meds.length > 0) {
+            speechText += ` ${I18N.sd['slot' + capitalize(slot)]} تي: ` +
+              meds.map(m => `${m.name}، ${m.qty}، ${I18N.sd.meals[m.meal] || ''}`).join('، ۽ ');
+            speechText += ". ";
+          }
+        });
+        speechText += "ڊاڪٽر جي تصديق ٿيل نسخي تي عمل ڪريو.";
+      } else {
+        speechText = "Your confirmed medication schedule: ";
+        ['morning', 'afternoon', 'evening', 'bedtime'].forEach(slot => {
+          const meds = confirmedMedications.filter(m => m.slots.includes(slot));
+          if (meds.length > 0) {
+            speechText += `In the ${slot}: ` +
+              meds.map(m => `${m.name}, ${m.qty}, ${I18N.en.meals[m.meal] || ''}`).join(', and ');
+            speechText += ". ";
+          }
+        });
+        speechText += "Always verify instructions with your doctor or pharmacist.";
+      }
+
+      executeSpeechUtterance(speechText);
+    }
+
+    function speakSlot(slotName) {
+      if (!('speechSynthesis' in window)) {
+        alert("Speech synthesis is not supported by your browser.");
+        return;
+      }
+
+      const meds = confirmedMedications.filter(m => m.slots.includes(slotName));
+      if (meds.length === 0) {
+        showSpeechStatusBanner(`No medicines scheduled for ${slotName}.`, false);
+        return;
+      }
+
+      let text = "";
+      if (currentLanguage === 'ur') {
+        text = `${I18N.ur['slot' + capitalize(slotName)]} کے وقت: ` +
+          meds.map(m => `${m.name}، ${m.qty}، ${I18N.ur.meals[m.meal] || ''}`).join('، اور ');
+      } else if (currentLanguage === 'sd') {
+        text = `${I18N.sd['slot' + capitalize(slotName)]} تي: ` +
+          meds.map(m => `${m.name}، ${m.qty}، ${I18N.sd.meals[m.meal] || ''}`).join('، ۽ ');
+      } else {
+        text = `${capitalize(slotName)} medication: ` +
+          meds.map(m => `${m.name}, ${m.qty}, ${I18N.en.meals[m.meal] || ''}`).join(', and ');
+      }
+
+      executeSpeechUtterance(text);
+    }
+
+    function executeSpeechUtterance(text) {
+      window.speechSynthesis.cancel();
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.9; // clear, comfortable pace for patients
+
+      // Voice selection with regional fallback
+      const voices = window.speechSynthesis.getVoices();
+      let matchedVoice = null;
+
+      if (currentLanguage === 'ur') {
+        matchedVoice = voices.find(v => v.lang.startsWith('ur')) ||
+                       voices.find(v => v.lang.startsWith('hi')) || // phonetic Hindi fallback works well for Urdu
+                       null;
+      } else if (currentLanguage === 'sd') {
+        matchedVoice = voices.find(v => v.lang.startsWith('sd')) ||
+                       voices.find(v => v.lang.startsWith('ur')) ||
+                       voices.find(v => v.lang.startsWith('hi')) ||
+                       null;
+      } else {
+        matchedVoice = voices.find(v => v.lang.startsWith('en')) || null;
+      }
+
+      if (matchedVoice) {
+        utterance.voice = matchedVoice;
+        showSpeechStatusBanner(`Speaking with voice: ${matchedVoice.name} (${matchedVoice.lang})`, true);
+      } else {
+        showSpeechStatusBanner(I18N[currentLanguage].speechNoticeVoiceMissing, true);
+      }
+
+      utterance.onstart = () => {
+        isSpeaking = true;
+        document.getElementById('masterSpeechBtn').classList.add('speaking');
+        document.getElementById('masterSpeechBtnText').textContent = I18N[currentLanguage].audioBtnStop;
+      };
+
+      utterance.onend = () => {
+        stopSpeech();
+      };
+
+      utterance.onerror = () => {
+        stopSpeech();
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function showSpeechStatusBanner(msg, isInfo) {
+      const banner = document.getElementById('speechStatusBanner');
+      document.getElementById('speechStatusText').textContent = msg;
+      banner.style.display = 'flex';
+      setTimeout(() => {
+        if (!isSpeaking) banner.style.display = 'none';
+      }, 5000);
+    }
+
+    // =========================================================================
+    // 6. Bridge: Transfer from Prescription Scanner to Dosage Assistant
+    // =========================================================================
+    function transferToDosageAssistant(medName, strength, rawInstruction, suggestedSlots, suggestedMeal) {
+      // 1. Navigate to Dosage view
+      navigateTo('dosage');
+
+      // 2. Pre-fill the form with scanned / extracted information
+      document.getElementById('medNameInput').value = medName || '';
+      document.getElementById('medStrengthInput').value = strength || '';
+      document.getElementById('medInstructionInput').value = rawInstruction || '';
+      document.getElementById('mealRelationSelect').value = suggestedMeal || 'after_food';
+      document.getElementById('doseQtyInput').value = '1 Dose';
+      document.getElementById('editItemIndex').value = '-1';
+
+      // 3. Pre-check suggested slots
+      document.getElementById('slotCheckMorning').checked = suggestedSlots.includes('morning');
+      document.getElementById('slotCheckAfternoon').checked = suggestedSlots.includes('afternoon');
+      document.getElementById('slotCheckEvening').checked = suggestedSlots.includes('evening');
+      document.getElementById('slotCheckBedtime').checked = suggestedSlots.includes('bedtime');
+      document.getElementById('slotCheckPrn').checked = suggestedSlots.includes('prn');
+
+      // 4. Show inbound bridge notice requiring user review before confirmation
+      const notice = document.getElementById('bridgeInboundNotice');
+      notice.style.display = 'flex';
+      notice.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+        </svg>
+        <span>
+          <strong>Transferred from Scanner:</strong> &ldquo;${escapeHtml(medName)}&rdquo;. Please review the confirmed time slots below and click &ldquo;Confirm & Add to Schedule&rdquo;.
+        </span>
+      `;
+
+      // 5. Scroll smoothly to the form
+      document.querySelector('.dosage-form-card').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // =========================================================================
+    // 7. Schedule Demo Presets
+    // =========================================================================
+    function loadSchedulePreset(presetId) {
+      if (presetId === 1) {
+        confirmedMedications = [
+          {
+            name: "Amoxicillin Trihydrate",
+            strength: "500 mg Capsule",
+            instruction: "Take 1 capsule 3 times daily after meals for 5 days.",
+            slots: ["morning", "afternoon", "bedtime"],
+            meal: "after_food",
+            qty: "1 Cap",
+            verified: true
+          },
+          {
+            name: "Paracetamol",
+            strength: "500 mg Tablet",
+            instruction: "Take 1 to 2 tablets only if pain or fever exceeds 100°F.",
+            slots: ["prn"],
+            meal: "prn_fever",
+            qty: "1 Tab",
+            verified: true
+          }
+        ];
+      } else if (presetId === 2) {
+        confirmedMedications = [
+          {
+            name: "Metformin HCl",
+            strength: "500 mg Tablet",
+            instruction: "Take 1 tablet with breakfast and 1 with dinner.",
+            slots: ["morning", "evening"],
+            meal: "with_food",
+            qty: "1 Tab",
+            verified: true
+          },
+          {
+            name: "Atorvastatin",
+            strength: "20 mg Tablet",
+            instruction: "Take 1 tablet daily at bedtime for lipid control.",
+            slots: ["bedtime"],
+            meal: "after_food",
+            qty: "1 Tab",
+            verified: true
+          },
+          {
+            name: "Omeprazole",
+            strength: "20 mg Capsule",
+            instruction: "Take 1 capsule before breakfast on an empty stomach.",
+            slots: ["morning"],
+            meal: "before_food",
+            qty: "1 Cap",
+            verified: true
+          }
+        ];
+      }
+      renderVisualSchedule();
+    }
+
+    // =========================================================================
+    // 8. Prescription Scanner Helper Functions
+    // =========================================================================
+    function triggerFileInput() {
+      document.getElementById('prescriptionFileInput').click();
+    }
+
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (file) {
+        renderCustomScanResult(file.name);
+      }
+    }
+
+    function renderCustomScanResult(filename) {
+      const emptyState = document.getElementById('scannerEmptyState');
+      const dataView = document.getElementById('extractedDataView');
+      const statusBadge = document.getElementById('scannerStatusBadge');
+      const container = document.getElementById('medListContainer');
+      const alertBox = document.getElementById('safetyAlertBox');
+      const alertText = document.getElementById('safetyAlertText');
+
+      emptyState.style.display = 'none';
+      dataView.style.display = 'block';
+      statusBadge.className = 'status-badge active';
+      statusBadge.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:currentColor;"></span> File Loaded: ${filename}`;
+
+      container.innerHTML = `
+        <div class="med-card">
+          <div class="med-card-header">
+            <span class="med-card-title">Uploaded Document: ${filename}</span>
+            <span class="med-pill-badge">Image Parsed</span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-body); margin-top: 0.25rem;">
+            Document ingested successfully. Optical character recognition and prescription entity extraction will execute via Stage 2 model services.
+          </p>
+          <div class="med-specs">
+            <div class="spec-item"><span>Format:</span> Image/Document</div>
+            <div class="spec-item"><span>Privacy Mode:</span> Local Memory Only</div>
+            <div class="spec-item"><span>Status:</span> Ready for Review</div>
+          </div>
+          <button type="button" class="transfer-bridge-btn" onclick="transferToDosageAssistant('Prescription Item (${filename})', '', 'Take as directed by doctor', ['morning', 'bedtime'], 'after_food')">
+            Transfer to Dosage Assistant for Review &rarr;
+          </button>
+        </div>
+      `;
+
+      alertBox.style.display = 'flex';
+      alertText.textContent = "Informational Verification: Please verify extracted items with the physical prescription slip.";
+    }
+
+    function loadSamplePrescription(sampleId) {
+      const emptyState = document.getElementById('scannerEmptyState');
+      const dataView = document.getElementById('extractedDataView');
+      const statusBadge = document.getElementById('scannerStatusBadge');
+      const container = document.getElementById('medListContainer');
+      const alertBox = document.getElementById('safetyAlertBox');
+      const alertText = document.getElementById('safetyAlertText');
+
+      document.getElementById('preset-1').classList.toggle('active', sampleId === 1);
+      document.getElementById('preset-2').classList.toggle('active', sampleId === 2);
+
+      emptyState.style.display = 'none';
+      dataView.style.display = 'block';
+      statusBadge.className = 'status-badge active';
+      statusBadge.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:currentColor;"></span> Sample ${sampleId} Loaded`;
+
+      if (sampleId === 1) {
+        container.innerHTML = `
+          <div class="med-card">
+            <div class="med-card-header">
+              <span class="med-card-title">1. Amoxicillin Trihydrate</span>
+              <span class="med-pill-badge">Oral Capsule</span>
+            </div>
+            <div class="med-specs">
+              <div class="spec-item"><span>Strength:</span> 500 mg</div>
+              <div class="spec-item"><span>Frequency:</span> TDS (3x daily)</div>
+              <div class="spec-item"><span>Duration:</span> 5 Days</div>
+            </div>
+            <button type="button" class="transfer-bridge-btn" onclick="transferToDosageAssistant('Amoxicillin Trihydrate', '500 mg Capsule', 'Take 1 capsule 3 times daily after meals for 5 days', ['morning', 'afternoon', 'bedtime'], 'after_food')">
+              Transfer to Dosage Assistant for Review &rarr;
+            </button>
+          </div>
+
+          <div class="med-card">
+            <div class="med-card-header">
+              <span class="med-card-title">2. Paracetamol</span>
+              <span class="med-pill-badge">Oral Tablet</span>
+            </div>
+            <div class="med-specs">
+              <div class="spec-item"><span>Strength:</span> 500 mg</div>
+              <div class="spec-item"><span>Frequency:</span> PRN (As needed)</div>
+              <div class="spec-item"><span>Max Daily:</span> &le; 4000 mg</div>
+            </div>
+            <button type="button" class="transfer-bridge-btn" onclick="transferToDosageAssistant('Paracetamol', '500 mg Tablet', 'Take 1 tablet as needed for fever or pain', ['prn'], 'prn_fever')">
+              Transfer to Dosage Assistant for Review &rarr;
+            </button>
+          </div>
+        `;
+        alertBox.style.display = 'flex';
+        alertText.textContent = "Safety Check: Verify patient has no known penicillin allergies before Amoxicillin therapy. Do not exceed max paracetamol daily threshold.";
+      } else if (sampleId === 2) {
+        container.innerHTML = `
+          <div class="med-card">
+            <div class="med-card-header">
+              <span class="med-card-title">1. Metformin Hydrochloride</span>
+              <span class="med-pill-badge">Oral Tablet</span>
+            </div>
+            <div class="med-specs">
+              <div class="spec-item"><span>Strength:</span> 500 mg</div>
+              <div class="spec-item"><span>Frequency:</span> BD (Twice daily)</div>
+              <div class="spec-item"><span>Instruction:</span> With meals</div>
+            </div>
+            <button type="button" class="transfer-bridge-btn" onclick="transferToDosageAssistant('Metformin Hydrochloride', '500 mg Tablet', 'Take 1 tablet twice daily with meals', ['morning', 'evening'], 'with_food')">
+              Transfer to Dosage Assistant for Review &rarr;
+            </button>
+          </div>
+
+          <div class="med-card">
+            <div class="med-card-header">
+              <span class="med-card-title">2. Atorvastatin</span>
+              <span class="med-pill-badge">Oral Tablet</span>
+            </div>
+            <div class="med-specs">
+              <div class="spec-item"><span>Strength:</span> 20 mg</div>
+              <div class="spec-item"><span>Frequency:</span> OD (At Bedtime)</div>
+              <div class="spec-item"><span>Duration:</span> Long-term</div>
+            </div>
+            <button type="button" class="transfer-bridge-btn" onclick="transferToDosageAssistant('Atorvastatin', '20 mg Tablet', 'Take 1 tablet daily at bedtime', ['bedtime'], 'after_food')">
+              Transfer to Dosage Assistant for Review &rarr;
+            </button>
+          </div>
+        `;
+        alertBox.style.display = 'flex';
+        alertText.textContent = "Safety Check: Renal monitoring advised for Metformin. Take Atorvastatin at evening/bedtime for optimal lipid metabolism.";
+      }
+    }
+
+    function clearPrescription() {
+      document.getElementById('scannerEmptyState').style.display = 'block';
+      document.getElementById('extractedDataView').style.display = 'none';
+      const statusBadge = document.getElementById('scannerStatusBadge');
+      statusBadge.className = 'status-badge idle';
+      statusBadge.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:currentColor;"></span> Awaiting Input`;
+
+      document.getElementById('preset-1').classList.remove('active');
+      document.getElementById('preset-2').classList.remove('active');
+    }
+
+    // =========================================================================
+    // 9. Generic Matcher Engine
+    // =========================================================================
+    function renderGenericTable(data) {
+      const tbody = document.getElementById('genericTableBody');
+      const emptyState = document.getElementById('genericEmptyState');
+
+      tbody.innerHTML = '';
+
+      if (data.length === 0) {
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+
+      data.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="brand-cell">
+            <strong>${item.brand}</strong>
+            <small>Branded formulation</small>
+          </td>
+          <td><span class="salt-pill">${item.salt}</span></td>
+          <td>${item.strength}</td>
+          <td>${item.form}</td>
+          <td><strong>${item.genericBrand}</strong></td>
+          <td>
+            <span class="price-badge ${item.saving ? 'saving' : 'standard'}">
+              ${item.priceIndicator}
+            </span>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterGenericTable() {
+      const query = document.getElementById('genericSearchInput').value.toLowerCase().trim();
+
+      const filtered = GENERIC_CATALOG.filter(item => {
+        const matchesForm = (currentActiveFormFilter === 'all') || (item.form.toLowerCase() === currentActiveFormFilter);
+        const matchesQuery = item.brand.toLowerCase().includes(query) ||
+                             item.salt.toLowerCase().includes(query) ||
+                             item.genericBrand.toLowerCase().includes(query);
+        return matchesForm && matchesQuery;
+      });
+
+      renderGenericTable(filtered);
+    }
+
+    function setFormFilter(formType, btnElement) {
+      currentActiveFormFilter = formType;
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      btnElement.classList.add('active');
+      filterGenericTable();
+    }
+
+    // =========================================================================
+    // 10. Application Initialization
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      // 1. Initialize generic matcher table
+      renderGenericTable(GENERIC_CATALOG);
+
+      // 2. Load default verified schedule preset for demo
+      loadSchedulePreset(1);
+
+      // 3. Initialize voices when browser loads them
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = () => {
+          // Voices ready
+        };
+      }
+
+      // 4. Check URL hash routing
+      const currentHash = window.location.hash.replace('#', '');
+      if (['dashboard', 'scanner', 'dosage', 'generic'].includes(currentHash)) {
+        navigateTo(currentHash);
+      } else {
+        navigateTo('dashboard');
+      }
+    });
+  </script>
+</body>
+</html>

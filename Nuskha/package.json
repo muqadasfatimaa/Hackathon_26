@@ -1,0 +1,22 @@
+{
+  "name": "nuskha",
+  "version": "0.1.0",
+  "description": "Nuskha AI - Modern, accessible medication-assistance web platform with prescription scanning, visual dosage assistance (Urdu/Sindhi), and generic medicine matching.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node -e \"const s = require('./server.js'); setTimeout(() => { s.close(); console.log('Test passed'); }, 500);\""
+  },
+  "keywords": [
+    "healthcare",
+    "hackathon",
+    "prescription-scanner",
+    "dosage-assistant",
+    "urdu",
+    "sindhi",
+    "generic-matcher",
+    "nuskha"
+  ],
+  "author": "Nuskha AI Team",
+  "license": "MIT"
+}
